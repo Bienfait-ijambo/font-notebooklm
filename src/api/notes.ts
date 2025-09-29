@@ -1,7 +1,7 @@
 import { apiUrl } from "@/config/get-env";
 import { getUserData } from "@/helper/getUserData";
 import { makeHttpReq } from "@/helper/makeHttpReq";
-import type { NoteServerData } from "@/types/note-types";
+import type { NoteServerData, NoteType } from "@/types/note-types";
 
 
 export async function getNotes(page = 1, search: string = ''): Promise<NoteServerData> {
@@ -13,24 +13,32 @@ export async function getNotes(page = 1, search: string = ''): Promise<NoteServe
 }
 
 
+export async function getSingleNote(id:string): Promise<{note:NoteType}> {
+    const data = await makeHttpReq('GET', `notes/${id}`) as {note:NoteType}
+    return data
+
+
+}
+
+
 const downloadFile = async (fileId: string) => {
 
-    console.log('file id : ',fileId)
-    const userId='68beb16d17836bc4d0e84bda'
-    const noteId='68d8d6e3308f4849551fe067'
+    console.log('file id : ', fileId)
+    const userId = '68beb16d17836bc4d0e84bda'
+    const noteId = '68d8d6e3308f4849551fe067'
 
-        // const data = await makeHttpReq('POST', `notes/drive-files`,{fileId,userId,noteId}) as NoteServerData
-  
-        const response = await fetch(`${apiUrl}/api/v1/notes/drive-files`, {
-          method: "POST",
-          credentials: "include",
-            headers: {
-    "Content-Type": "application/json", // ✅ important!
-  },
-          body: JSON.stringify({fileId,userId,noteId}),
-        });
-        const r=await response.json()
-   
+    // const data = await makeHttpReq('POST', `notes/drive-files`,{fileId,userId,noteId}) as NoteServerData
+
+    const response = await fetch(`${apiUrl}/api/v1/notes/drive-files`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json", // ✅ important!
+        },
+        body: JSON.stringify({ fileId, userId, noteId }),
+    });
+    const r = await response.json()
+
 };
 
 

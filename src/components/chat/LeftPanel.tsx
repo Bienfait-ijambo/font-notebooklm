@@ -2,10 +2,17 @@ import type { AppDispatch, RootState } from "@/store";
 import { addExtraWidth, reduceExtraWidth, toggleLeftPanel } from "@/store/chatSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
-import { PanelLeft, Plus, Search } from "lucide-react";
+import { FileText, NotepadText, PanelLeft, Plus, Search } from "lucide-react";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
+import type { NoteType } from "@/types/note-types";
+import { Checkbox } from "../ui/checkbox";
 
-const LeftPanel = () => {
+
+type leftPanelProps={
+  note:NoteType
+}
+
+const LeftPanel = ({note}:leftPanelProps) => {
 
      const dispatch = useDispatch<AppDispatch>();
   const { leftPanelOpen } = useSelector((state: RootState) => state.chat);
@@ -20,6 +27,17 @@ const LeftPanel = () => {
 
     }
   }
+
+
+    function toggleDocCheck(id: number) {
+      console.log(id)
+    // setDocs(prev =>
+    //   prev.map(doc =>
+    //     doc.id === id ? { ...doc, checked: !doc.checked } : doc
+    //   )
+    // );
+  }
+
 
   
     return ( <div
@@ -70,6 +88,57 @@ const LeftPanel = () => {
         </div>
       )}
 
+
+
+
+
+{/* body */}
+
+      {/* Docs List */}
+      {leftPanelOpen ? (
+        note?.docs.length > 0 ? (
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Checkbox
+                checked={false}
+                
+              />
+              <span className="text-sm font-medium">Select all sources</span>
+            </div>
+            {note?.docs.map((doc) => (
+              <div
+                key={doc._id}
+                className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
+              >
+                <FileText className="text-blue-500" size={20} />
+                <span className="flex-1 text-sm truncate">doc-title here is import</span>
+                <Checkbox
+                  checked={false}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-40 text-center">
+            <NotepadText className="text-gray-500 mx-auto" size={60} />
+            <p className="text-sm text-gray-400 font-semibold mt-4">
+              Saved sources will appear here.  
+              Click Add source above to add PDFs, websites, text, videos, or audio files.  
+              Or import a file directly from Google Drive.
+            </p>
+          </div>
+        )
+      ) : (
+        // closed panel docs icons
+        <div className="flex flex-col items-center mt-6 gap-4">
+          {note?.docs.map((doc) => (
+            <Button key={doc._id} variant="outline" size="icon">
+              <FileText className="text-blue-500" size={20} />
+            </Button>
+          ))}
+        </div>
+      )}
+{/* body */}
 </div> );
 }
  

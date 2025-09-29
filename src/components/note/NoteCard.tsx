@@ -5,21 +5,14 @@ import { truncateTitle } from '@/util/truncateTitle';
 
 import DefaultImage from '@/assets/default.png'
 import { Ellipsis } from 'lucide-react';
-// type Note = {
-//     id: number;
-//     title: string;
-//     date: string;
-//     sources: number;
-//     color: string;
-//     image?: string;
-// };
 
 
 
 type NoteCardProps = {
     notebooks: NoteType[];
+    viewNoteDetail:(id:string)=>void
 };
-const NoteCard = ({ notebooks }: NoteCardProps) => {
+const NoteCard = ({ notebooks ,viewNoteDetail}: NoteCardProps) => {
     return (<>
         {
             notebooks.map((note: NoteType) => (
@@ -27,6 +20,7 @@ const NoteCard = ({ notebooks }: NoteCardProps) => {
                 <div
                     key={note._id}
                     className={`relative p-4 rounded-xl shadow-sm hover:shadow-md transition h-52 bg-white`}
+                    onClick={()=>viewNoteDetail(note?._id)}
                 >
 
                     {/* Image at top */}

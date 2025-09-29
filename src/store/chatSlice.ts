@@ -1,11 +1,27 @@
-import { createSlice, configureStore } from '@reduxjs/toolkit'
+import { getSingleNote } from '@/api/notes';
+import type { NoteType } from '@/types/note-types';
+import { createSlice, configureStore, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
+
+
+export const fetchSingleNote = createAsyncThunk(
+  "notes/fetchNotes",
+  async (id:string) => getSingleNote(id)
+);
+
+const singleNoteState = {
+  note: {} as NoteType,
+  loading: false,
+  error: null,
+};
+
 
 const chatSlice = createSlice({
     name: 'chat',
     initialState: {
         leftPanelOpen: true,
         rightPanelOpen: true,
-        middlePanelDefaultWidth: 50
+        middlePanelDefaultWidth: 50,
+        ...singleNoteState
     },
     reducers: {
         addExtraWidth: state => {
@@ -33,7 +49,22 @@ const chatSlice = createSlice({
 
 
 
-    }
+    },
+    extraReducers: (builder) => {
+    builder
+      .addCase(fetchSingleNote.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSingleNote.fulfilled, (state, action: PayloadAction<{note:NoteType}>) => {
+        state.note = action.payload.note;
+        state.loading = false;
+      })
+      .addCase(fetchSingleNote.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch notes";
+      });
+  },
 })
 
 export const { addExtraWidth, toggleLeftPanel, toggleRightPanel, reduceExtraWidth } = chatSlice.actions

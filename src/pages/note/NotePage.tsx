@@ -17,7 +17,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Input } from '@/components/ui/input';
-import {debounce} from 'lodash'
+import { debounce } from 'lodash'
 import { toggleAddSourceNoteModal } from '@/store/addSourceSlice';
 import { useNavigate } from 'react-router';
 
@@ -26,43 +26,48 @@ function NotePage() {
 
     const dispatch = useDispatch<AppDispatch>();
     const { notes, loading, pagination } = useSelector((state: RootState) => state.note);
- 
+
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('')
     const totalPages = pagination?.totalPages ?? 1;
+    const navigate = useNavigate()
 
-    
 
-    const fetchNoteWithDebounce=useCallback(debounce((page:number,search:string)=>{
-        dispatch(fetchNotes({page,search}))
 
-    },500),[dispatch])
+    const fetchNoteWithDebounce = useCallback(debounce((page: number, search: string) => {
+        dispatch(fetchNotes({ page, search }))
 
- 
+    }, 500), [dispatch])
+
+
     const searchNote = (e: React.ChangeEvent<HTMLInputElement>) => {
-       
+
         const title = e.target.value
-     
+
         setSearch(title)
         setPage(1)
-  
+
+    }
+
+    const viewNoteDetail = (id: string) => {
+        navigate('/chats/' + id)
+
     }
 
 
-    const navigate=useNavigate()
 
-    const showAddNoteSourceModal=()=>{
+    const showAddNoteSourceModal = () => {
 
         dispatch(toggleAddSourceNoteModal())
         navigate('/chats')
-        
+
     }
 
- 
+
     useEffect(() => {
-      
-        fetchNoteWithDebounce(page,search)
-    }, [ page,search,fetchNoteWithDebounce])
+
+        fetchNoteWithDebounce(page, search)
+    }, [page, search, fetchNoteWithDebounce])
 
 
 
@@ -89,7 +94,7 @@ function NotePage() {
 
                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                     {/* Create new notebook card */}
-                    <div  onClick={()=>showAddNoteSourceModal()} className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl h-40 cursor-pointer hover:bg-gray-100 transition">
+                    <div onClick={() => showAddNoteSourceModal()} className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl h-40 cursor-pointer hover:bg-gray-100 transition">
                         <div className="flex flex-col items-center">
                             <Plus className="w-8 h-8 text-blue-600 mb-2" />
                             <span className="text-gray-600 font-medium">
@@ -101,47 +106,40 @@ function NotePage() {
                     </div>
 
 
-                    <NoteCard notebooks={notes}  />
-                    {/* <CreateNoteModal></CreateNoteModal> */}
-                    {/* <DiscoveryModal></DiscoveryModal> */}
-                    {/* <EditNoteModal>
-
-                    </EditNoteModal> */}
-
-                    {/* Pagination */}
+                    <NoteCard viewNoteDetail={viewNoteDetail} notebooks={notes} />
 
 
                 </div>
-                
-                    {/* Pagination */}
-                    <div className="mt-6 flex justify-center">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious
-                                        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                    />
-                                </PaginationItem>
 
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <PaginationItem key={i}>
-                                        <PaginationLink
-                                            isActive={page === i + 1}
-                                            onClick={() => setPage(i + 1)}
-                                        >
-                                            {i + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
+                {/* Pagination */}
+                <div className="mt-6 flex justify-center">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                />
+                            </PaginationItem>
 
-                                <PaginationItem>
-                                    <PaginationNext
-                                        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                                    />
+                            {[...Array(totalPages)].map((_, i) => (
+                                <PaginationItem key={i}>
+                                    <PaginationLink
+                                        isActive={page === i + 1}
+                                        onClick={() => setPage(i + 1)}
+                                    >
+                                        {i + 1}
+                                    </PaginationLink>
                                 </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
+                            ))}
+
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
             </main>
 
         </>
