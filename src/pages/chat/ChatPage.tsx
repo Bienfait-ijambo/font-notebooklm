@@ -23,6 +23,7 @@ useEffect(() => {
   dispatch(fetchSingleNote(id))
      
 
+
 }, [dispatch, id]);
 
 
@@ -30,6 +31,7 @@ useEffect(() => {
   return (
     <>
       <div className="flex h-screen gap-4">
+         {JSON.stringify(note)}
         <LeftPanel note={note} />
         <MiddlePanel></MiddlePanel>
         <RightPanel />

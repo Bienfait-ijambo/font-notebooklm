@@ -96,7 +96,7 @@ const LeftPanel = ({note}:leftPanelProps) => {
 
       {/* Docs List */}
       {leftPanelOpen ? (
-        note?.docs.length > 0 ? (
+        note?.docs?.length0 ? (
           <div className="mt-4 space-y-3">
             <div className="flex items-center gap-2 mb-2">
               <Checkbox
@@ -107,7 +107,7 @@ const LeftPanel = ({note}:leftPanelProps) => {
             </div>
             {note?.docs.map((doc) => (
               <div
-                key={doc._id}
+                key={doc._id} 
                 className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
               >
                 <FileText className="text-blue-500" size={20} />

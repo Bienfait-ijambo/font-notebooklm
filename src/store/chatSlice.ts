@@ -4,7 +4,7 @@ import { createSlice, configureStore, createAsyncThunk, type PayloadAction } fro
 
 
 export const fetchSingleNote = createAsyncThunk(
-  "notes/fetchNotes",
+  "notes/singleNote",
   async (id:string) => getSingleNote(id)
 );
 
