@@ -3,11 +3,12 @@ import MiddlePanel from '@/components/chat/MiddlePanel'
 import RightPanel from '@/components/chat/RightPanel'
 import { useEffect, useState } from 'react'
 import CreateNoteModal from '@/components/note/CreateNoteModal'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '@/store'
 import { fetchSingleNote } from '@/store/chatSlice'
-
+import { MoveLeft } from 'lucide-react'
+import UserAvatar from '@/components/base/UserAvatar'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -18,25 +19,49 @@ function ChatPage() {
   const { note } = useSelector((state: RootState) => state.chat);
 
 
-useEffect(() => {
+  useEffect(() => {
 
-  dispatch(fetchSingleNote(id))
-     
+    if (id) {
+      dispatch(fetchSingleNote(id))
 
-
-}, [dispatch, id]);
+    }
+  }, [dispatch, id]);
 
 
 
   return (
     <>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex   items-center gap-2">
+          <Link
+            to="/notes"
+            className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
+          >
+            <MoveLeft size={18} />
+          </Link>
+          <input
+
+            type="text"
+            value={note?.title}
+            className="w-full min-w-[300px] max-w-sm bg-transparent border-none focus:ring-0 text-gray-800 text-base font-medium truncate"
+            readOnly
+          />
+        </div>
+        <div className='mr-4'>
+          {/* header actions here */}
+          <UserAvatar />
+        </div>
+      </div>
+
+
       <div className="flex h-screen gap-4">
-         {JSON.stringify(note)}
+
+
         <LeftPanel note={note} />
         <MiddlePanel></MiddlePanel>
         <RightPanel />
 
-        <CreateNoteModal></CreateNoteModal>
+        <CreateNoteModal noteId={id} ></CreateNoteModal>
 
       </div>
 

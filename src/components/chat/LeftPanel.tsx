@@ -96,7 +96,7 @@ const LeftPanel = ({note}:leftPanelProps) => {
 
       {/* Docs List */}
       {leftPanelOpen ? (
-        note?.docs?.length0 ? (
+        note?.docs?.length ? (
           <div className="mt-4 space-y-3">
             <div className="flex items-center gap-2 mb-2">
               <Checkbox
@@ -105,13 +105,13 @@ const LeftPanel = ({note}:leftPanelProps) => {
               />
               <span className="text-sm font-medium">Select all sources</span>
             </div>
-            {note?.docs.map((doc) => (
+            {note?.docs?.map((doc) => (
               <div
                 key={doc._id} 
                 className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
               >
                 <FileText className="text-blue-500" size={20} />
-                <span className="flex-1 text-sm truncate">doc-title here is import</span>
+                <span className="flex-1 text-sm truncate">{doc?.title}</span>
                 <Checkbox
                   checked={false}
                 />

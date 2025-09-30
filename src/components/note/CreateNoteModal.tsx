@@ -14,14 +14,13 @@ import { uploadPickedFiles } from "@/api/notes";
 
 
 
-const CreateNoteModal = () => {
+const CreateNoteModal = ({noteId}:{noteId?:string}) => {
 
     const dispatch = useDispatch<AppDispatch>();
     const { modal } = useSelector((state: RootState) => state.addSource);
     const userData = getUserData()
 
     const [openPicker, data, authResponse] = useDrivePicker();
-    // const customViewsArray = [new google.picker.DocsView()]; // custom view
     const handleOpenPicker = async () => {
 
 
@@ -48,7 +47,7 @@ const CreateNoteModal = () => {
         // }
         if (data) {
             // console.log('docs : ', data?.docs)
-            uploadPickedFiles(data?.docs,userData?.googleAccessToken)
+            uploadPickedFiles(data?.docs,noteId)
         }
     }, [data])
 

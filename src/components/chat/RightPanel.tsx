@@ -25,7 +25,7 @@ const RightPanel = () => {
 
     return (
         <div
-            className={`bg-white shadow-md rounded-sm h-full transition-all duration-300 ml-auto ${rightPanelOpen ? "w-[25%] p-4" : "w-16 p-2"
+            className={`bg-white shadow-md rounded-sm h-full transition-all duration-300 ml-auto mr-auto ${rightPanelOpen ? "w-[25%] p-4" : "w-16 p-2"
                 }`}
         >
             {/* Header */}
