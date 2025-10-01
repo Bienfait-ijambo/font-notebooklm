@@ -38,9 +38,29 @@ const downloadFileInDrive = async (fileId: string, noteId?: string) => {
 
 
 export const uploadPickedFiles = async (docs: any[], noteId: string) => {
+  if(Array.isArray(docs)){
+      
     for (const doc of docs) {
        await downloadFileInDrive(doc.id, noteId);
     
     }
 
+  }
 };
+
+
+const sendWeblink = async (webLink: string, noteId?: string) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/weblinkdata`,
+             { webLink, userId, noteId }) 
+        console.log(data)
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+

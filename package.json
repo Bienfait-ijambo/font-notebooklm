@@ -22,6 +22,7 @@
     "lucide-react": "^0.542.0",
     "mind-elixir": "^5.0.6",
     "react": "^19.1.1",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.1.1",
     "react-google-drive-picker": "^1.1.4",
     "react-google-picker": "^0.1.0",
