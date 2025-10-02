@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { BaseModal } from "../base/BaseModal"
-import { Button } from "../ui/button"
+import { BaseModal } from "../../base/BaseModal"
+import { Button } from "../../ui/button"
 import { ClipboardMinus, HardDrive, Link2, MoveLeft, Newspaper, Search, Youtube } from "lucide-react";
 import type { AppDispatch, RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,11 +9,12 @@ import useDrivePicker from 'react-google-drive-picker'
 import { developerKey, googleClientId } from "@/config/get-env";
 import { getUserData } from "@/helper/getUserData";
 
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
+import { Label } from "../../ui/label";
+import { Textarea } from "../../ui/textarea";
 import { uploadPickedFiles } from "@/api/notes";
-
-
+import { AddYoutubeForm } from "./AddYoutubeForm";
+import { AddPasteTextForm } from "./AddPasteTextForm";
+import AddWebLinkForm from "./AddWebLinkForm";
 
 
 
@@ -96,9 +97,7 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
 
     useEffect(() => {
 
-
         uploadPickedFiles(data?.docs, noteId)
-
 
     }, [data])
 
@@ -143,12 +142,12 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
                 {dropZone && <UploadFileSection />}
 
 
-                {youtubeLinkForm && <AddYoutubeForm hideYoutubeLinkForm={hideYoutubeLinkForm} />}
+                {youtubeLinkForm && <AddYoutubeForm noteId={noteId} hideYoutubeLinkForm={hideYoutubeLinkForm} />}
 
-                {websiteLinkForm && <AddWebLinkForm hideWebLinkForm={hideWebLinkForm} />}
+                {websiteLinkForm && <AddWebLinkForm noteId={noteId} hideWebLinkForm={hideWebLinkForm} />}
 
 
-   {pasteTextForm && <AddPasteTextForm hidePasteTextForm={hidePasteTextForm} />}
+                {pasteTextForm && <AddPasteTextForm noteId={noteId} hidePasteTextForm={hidePasteTextForm} />}
 
 
 
@@ -183,7 +182,7 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
 
                     <div className="flex-1 rounded-md border border-gray-200 p-4">
                         <div className="mb-5 " >
-                            <p  className="flex cursor-pointer gap-2 font-semibold text-gray-900">
+                            <p className="flex cursor-pointer gap-2 font-semibold text-gray-900">
                                 <ClipboardMinus></ClipboardMinus> Paste text
                             </p>
                         </div>
@@ -228,53 +227,7 @@ const UploadFileSection = () => {
 }
 
 
-const AddYoutubeForm = ({ hideYoutubeLinkForm }: { hideYoutubeLinkForm: () => void }) => {
-    return (
-        // 
-        <div className="p-1 mb-4 mt-4">
-            <div className="flex gap-2">
-                <button className="cursor-pointer" onClick={hideYoutubeLinkForm} ><MoveLeft /></button>
-                <Label htmlFor="" className="text-sm font-semibold">Paste a Youtube URL</Label>
-            </div>
-
-            <Textarea
-                className="resize-y min-h-[100px] mt-2 text-sm placeholder:text-sm" placeholder="https://www.youtube.com/?feature=ytca" />
-        </div>
-    );
-}
-
-const AddWebLinkForm = ({ hideWebLinkForm }: { hideWebLinkForm: () => void }) => {
-    return (
 
 
-        <div className="p-1 mb-4 mt-4">
-            <div className="flex gap-2">
-                <button className="cursor-pointer" onClick={hideWebLinkForm} ><MoveLeft /></button>
-                <Label htmlFor="" className="text-sm font-semibold">Paste a link</Label>
-            </div>
-
-            <Textarea
-                className="resize-y min-h-[100px] mt-2 text-sm placeholder:text-sm" placeholder="https://www.npmjs.com/package/react-google-drive-picker" />
-        </div>
-    );
-}
-
-
-
-const AddPasteTextForm = ({ hidePasteTextForm }: { hidePasteTextForm: () => void }) => {
-    return (
-
-
-        <div className="p-1 mb-4 mt-4">
-            <div className="flex gap-2">
-                <button className="cursor-pointer" onClick={hidePasteTextForm} ><MoveLeft /></button>
-                <Label htmlFor="" className="text-sm font-semibold">Paste a Text</Label>
-            </div>
-
-            <Textarea
-                className="resize-y min-h-[100px] mt-2 text-sm placeholder:text-sm" placeholder="Paste text here" />
-        </div>
-    );
-}
 
 export default CreateNoteModal;

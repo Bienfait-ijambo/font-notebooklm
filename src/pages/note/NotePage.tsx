@@ -1,4 +1,4 @@
-import CreateNoteModal from '@/components/note/CreateNoteModal';
+import CreateNoteModal from '@/components/note/createNoteModal/CreateNoteModal';
 import DiscoveryModal from '@/components/note/DiscoveryModal';
 import EditNoteModal from '@/components/note/EditNoteModal';
 import NoteCard from '@/components/note/NoteCard';

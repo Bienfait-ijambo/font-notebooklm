@@ -49,18 +49,36 @@ export const uploadPickedFiles = async (docs: any[], noteId: string) => {
 };
 
 
-const sendWeblink = async (webLink: string, noteId?: string) => {
+export const sendWeblink = async (webLink: string, noteId?: string) => {
     try {
         const userData = getUserData()
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/weblinkdata`,
              { webLink, userId, noteId }) 
-        console.log(data)
+        console.log('add weblink : ',data)
 
     } catch (error) {
         console.log('error : ', error)
     }
 
 };
+
+
+export const sendTextData = async (text: string, noteId?: string) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/text-data`,
+             { text, userId, noteId }) 
+        console.log('add text : ',data)
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
 
