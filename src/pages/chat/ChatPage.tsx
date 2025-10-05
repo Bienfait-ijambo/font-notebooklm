@@ -9,6 +9,7 @@ import type { AppDispatch, RootState } from '@/store'
 import { fetchSingleNote } from '@/store/chatSlice'
 import { MoveLeft } from 'lucide-react'
 import UserAvatar from '@/components/base/UserAvatar'
+import DiscoveryModal from '@/components/note/DiscoveryModal'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -62,6 +63,8 @@ function ChatPage() {
         <RightPanel />
 
         <CreateNoteModal noteId={id} ></CreateNoteModal>
+        <DiscoveryModal noteId={id}></DiscoveryModal>
+        
 
       </div>
 

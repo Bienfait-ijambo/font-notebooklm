@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BaseModal } from "../../base/BaseModal"
 import { Button } from "../../ui/button"
 import { ClipboardMinus, HardDrive, Link2, MoveLeft, Newspaper, Search, Youtube } from "lucide-react";
@@ -6,15 +6,16 @@ import type { AppDispatch, RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
 import useDrivePicker from 'react-google-drive-picker'
-import { developerKey, googleClientId } from "@/config/get-env";
+import { apiUrl, developerKey, googleClientId } from "@/config/get-env";
 import { getUserData } from "@/helper/getUserData";
 
 import { Label } from "../../ui/label";
 import { Textarea } from "../../ui/textarea";
 import { uploadPickedFiles } from "@/api/notes";
-import { AddYoutubeForm } from "./AddYoutubeForm";
 import { AddPasteTextForm } from "./AddPasteTextForm";
 import AddWebLinkForm from "./AddWebLinkForm";
+import AddYoutubeLinkForm from "./AddYoutubeForm";
+import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 
 
 
@@ -117,10 +118,7 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
                 height={600}
                 footer={
                     <>
-                        <Button variant="outline" onClick={() => dispatch(toggleAddSourceNoteModal())}>
-                            Cancel
-                        </Button>
-                        <Button>Save changes</Button>
+
                     </>
                 }
             >
@@ -128,7 +126,7 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
                 <div className="flex justify-between mb-10 ">
                     <div className="text-xl font-semibold">Add Sources</div>
                     <div>
-                        <button className="flex gap-2  bg-indigo-100 rounded-full p-2 px-3 font-semibold text-indigo-600 ">
+                        <button onClick={() => dispatch(toggleDiscoveryModal())} className="flex gap-2  bg-indigo-100 rounded-full p-2 px-3 font-semibold text-indigo-600 ">
                             <Search className="mt-1" size={16}></Search> <span>Discover sources</span></button>
                     </div>
                 </div>
@@ -139,10 +137,10 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
                     <p className="text-sm text-gray-600">Sources let NotebookLM base its responses on the information that matters most to you.
                         (Examples: marketing plans, course reading, research notes, meeting transcripts, sales documents, etc.)</p>
                 </div>
-                {dropZone && <UploadFileSection />}
+                {dropZone && <UploadFileSection noteId={noteId} />}
 
 
-                {youtubeLinkForm && <AddYoutubeForm noteId={noteId} hideYoutubeLinkForm={hideYoutubeLinkForm} />}
+                {youtubeLinkForm && <AddYoutubeLinkForm noteId={noteId} hideYoutubeLinkForm={hideYoutubeLinkForm} />}
 
                 {websiteLinkForm && <AddWebLinkForm noteId={noteId} hideWebLinkForm={hideWebLinkForm} />}
 
@@ -198,33 +196,120 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
 
 
 
-const UploadFileSection = () => {
-    return (<div className="mb-8 mt-6 border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center text-center">
-        <div className="bg-indigo-50 rounded-full p-4 mb-3">
-            <svg
-                className="w-8 h-8 text-indigo-500"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-            >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12" />
-            </svg>
+
+
+const UploadFileSection = ({ noteId }: { noteId?: string }) => {
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            uploadFiles(files);
+        }
+    };
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            uploadFiles(files);
+        }
+    };
+
+    const uploadFiles = async (files: FileList) => {
+        const formData = new FormData();
+        const userData = getUserData()
+        const userId = userData?._id
+        Array.from(files).forEach((file) => {
+            formData.append("doc", file);
+            formData.append("userId", userId)
+            formData.append("noteId", noteId as string)
+
+        });
+
+        try {
+            const response = await fetch(`${apiUrl}/api/v1/notes/upload-files`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Upload failed: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log("Upload successful:", data);
+        } catch (error) {
+            console.error("Error uploading files:", error);
+        }
+    };
+
+
+
+
+
+    const handleClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    return (
+        <div
+            className={`mb-8 mt-6 rounded-lg p-8 flex flex-col items-center justify-center text-center 
+      ${isDragging ? "border-solid border-2 border-indigo-500 bg-indigo-50" : "border-2 border-dashed border-gray-300"}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={handleClick}
+            style={{ cursor: "pointer" }}
+        >
+            <div className="bg-indigo-50 rounded-full p-4 mb-3">
+                <svg
+                    className="w-8 h-8 text-indigo-500"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 12l-4-4m0 0l-4 4m4-4v12"
+                    />
+                </svg>
+            </div>
+
+            <p className="font-medium text-gray-900">Upload sources</p>
+            <p className="text-gray-500 text-sm mb-2">
+                Drag & drop or <span className="text-indigo-600 cursor-pointer">choose file</span> to upload
+            </p>
+            <p className="text-gray-400 text-xs">
+                Supported file types: PDF, .txt, Markdown, Audio (e.g. mp3)
+            </p>
+
+            <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileSelect}
+                multiple
+            />
         </div>
-
-        <p className="font-medium text-gray-900">Upload sources</p>
-        <p className="text-gray-500 text-sm mb-2">
-            Drag & drop or <span className="text-indigo-600 cursor-pointer">choose file</span> to upload
-        </p>
-        <p className="text-gray-400 text-xs">
-            Supported file types: PDF, .txt, Markdown, Audio (e.g. mp3)
-        </p>
-
-        {/* Hidden file input */}
-        <input type="file" className="hidden" />
-    </div>
     );
-}
+};
+
+
 
 
 

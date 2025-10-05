@@ -6,6 +6,7 @@ import { FileText, NotepadText, PanelLeft, Plus, Search } from "lucide-react";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
 import type { NoteType } from "@/types/note-types";
 import { Checkbox } from "../ui/checkbox";
+import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 
 
 type leftPanelProps={
@@ -16,6 +17,7 @@ const LeftPanel = ({note}:leftPanelProps) => {
 
      const dispatch = useDispatch<AppDispatch>();
   const { leftPanelOpen } = useSelector((state: RootState) => state.chat);
+  //  const { modal } = useSelector((state: RootState) => state.discoveryModal);
 
   function togglePanel() {
     if (leftPanelOpen) {
@@ -73,7 +75,7 @@ const LeftPanel = ({note}:leftPanelProps) => {
           <Button onClick={()=>dispatch(toggleAddSourceNoteModal())} variant="outline" className="rounded-3xl px-5 py-4 w-35">
             <Plus size={18} /> Add
           </Button>
-          <Button variant="outline" className="rounded-3xl px-5 py-3 w-35">
+          <Button   onClick={()=>dispatch(toggleDiscoveryModal())}  variant="outline" className="rounded-3xl px-5 py-3 w-35">
             <Search size={18} /> Discover
           </Button>
         </div>

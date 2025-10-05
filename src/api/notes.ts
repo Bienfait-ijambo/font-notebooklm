@@ -82,3 +82,30 @@ export const sendTextData = async (text: string, noteId?: string) => {
 
 
 
+export const sendYoutubeLink = async (youtubeLink: string, noteId?: string) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/youtube-link`,
+             { youtubeLink, userId, noteId }) 
+        console.log('add text : ',data)
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const searchWeb = async (query: string) => {
+    try {
+       
+        const data = await makeHttpReq('GET', `notes/search/web?query=${query}`) 
+       return data
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+

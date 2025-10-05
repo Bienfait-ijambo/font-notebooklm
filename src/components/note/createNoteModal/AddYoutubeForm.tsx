@@ -1,20 +1,91 @@
 
+
+
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { Loader2, MoveLeft } from "lucide-react";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoveLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { sendWeblink, sendYoutubeLink } from "@/api/notes";
 
+// 1. Schema validation with Zod
+const formSchema = z.object({
+    youtubeLink: z
+        .string()
+        .min(1, "Link is required")
+        .url("Please enter a valid URL"),
+});
 
-export const AddYoutubeForm = ({ hideYoutubeLinkForm,noteId }: { hideYoutubeLinkForm: () => void,noteId?:string }) => {
+type FormValues = z.infer<typeof formSchema>;
+
+const AddYoutubeLinkForm = ({ hideYoutubeLinkForm,noteId }: { hideYoutubeLinkForm: () => void,noteId?:string }) => {
+    // 2. Setup react-hook-form with Zod resolver
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm<FormValues>({
+        resolver: zodResolver(formSchema),
+    });
+
+    // 3. Submission handler
+    const onSubmit = async (data: FormValues) => {
+
+      await  sendYoutubeLink(data?.youtubeLink,noteId)
+
+        // Reset form after submit
+        reset();
+        // hideWebLinkForm();
+    };
+
     return (
-        // 
-        <div className="p-1 mb-4 mt-4">
-            <div className="flex gap-2">
-                <button className="cursor-pointer" onClick={hideYoutubeLinkForm} ><MoveLeft /></button>
-                <Label htmlFor="" className="text-sm font-semibold">Paste a Youtube URL</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="p-1 mb-4 mt-4 space-y-3">
+            <div className="flex items-center gap-2">
+                <button type="button" onClick={hideYoutubeLinkForm} className="cursor-pointer">
+                    <MoveLeft />
+                </button>
+                <Label htmlFor="link" className="text-sm font-semibold">
+                    Paste a youtube link
+                </Label>
             </div>
 
             <Textarea
-                className="resize-y min-h-[100px] mt-2 text-sm placeholder:text-sm" placeholder="https://www.youtube.com/?feature=ytca" />
-        </div>
+                id="link"
+                placeholder="https://www.npmjs.com/package/react-google-drive-picker"
+                className="resize-y min-h-[100px] mt-2 text-sm placeholder:text-sm"
+                {...register("youtubeLink")}
+            />
+
+            {errors.youtubeLink && (
+                <p className="text-red-500 text-xs mt-1">{errors.youtubeLink.message}</p>
+            )}
+
+            <div className="flex">
+                <div></div>
+                <div></div>
+                <div className="ml-auto">
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Submitting...
+                            </>
+                        ) : (
+                            "Submit"
+                        )}
+                    </Button>
+                </div>
+            </div>
+
+        </form>
     );
-}
+};
+
+// 
+export default AddYoutubeLinkForm;
