@@ -10,6 +10,7 @@ import { fetchSingleNote } from '@/store/chatSlice'
 import { MoveLeft } from 'lucide-react'
 import UserAvatar from '@/components/base/UserAvatar'
 import DiscoveryModal from '@/components/note/DiscoveryModal'
+import { EditNote } from '@/components/note/EditNote'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -33,7 +34,9 @@ function ChatPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <div className="flex   items-center gap-2">
+
+          <EditNote note={note} />
+        {/* <div className="flex   items-center gap-2">
           <Link
             to="/notes"
             className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
@@ -47,7 +50,7 @@ function ChatPage() {
             className="w-full min-w-[300px] max-w-sm bg-transparent border-none focus:ring-0 text-gray-800 text-base font-medium truncate"
             readOnly
           />
-        </div>
+        </div> */}
         <div className='mr-4'>
           {/* header actions here */}
           <UserAvatar />
@@ -74,3 +77,6 @@ function ChatPage() {
 }
 
 export default ChatPage
+
+
+
