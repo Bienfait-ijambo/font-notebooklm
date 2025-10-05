@@ -13,7 +13,8 @@ import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { searchWeb } from "@/api/notes";
+import { searchWeb, sendTextData } from "@/api/notes";
+import { showError } from "@/util/toast-notification";
 
 
 const FormSchema = z.object({
@@ -27,7 +28,9 @@ type FormType = z.infer<typeof FormSchema>;
 
 export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
 
-  const [searchResult, setSearchResult] = useState<Array<{title:string,link:string}>>([ ])
+  const [searchResult, setSearchResult] = useState<Array<{ title: string, link: string, text: string }>>([])
+  const [sendWebResultLoading, setSendWebResultLoading] = useState(false)
+
 
   const dispatch = useDispatch<AppDispatch>();
   const { modal } = useSelector((state: RootState) => state.discoveryModal);
@@ -58,6 +61,26 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
     // hidePasteTextForm();
   };
 
+  async function sendWebResult() {
+    try {
+     if(searchResult.length>0){
+       setSendWebResultLoading(true)
+      for (const webResult of searchResult) {
+        await sendTextData(webResult?.text,noteId)
+      }
+      setSendWebResultLoading(false)
+      dispatch(toggleDiscoveryModal())
+
+
+     }else{
+      showError('No source provided')
+     }
+    } catch (error) {
+      setSendWebResultLoading(false)
+    }
+
+  }
+
 
 
   return (
@@ -78,7 +101,17 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
         height={600}
         footer={
           <>
-
+  <Button variant="outline" onClick={() =>  dispatch(toggleDiscoveryModal())}>
+              Cancel
+            </Button>
+            <Button onClick={sendWebResult} disabled={sendWebResultLoading}>
+              {sendWebResultLoading?(<>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      searching...
+                    </>):(<>
+                    Submit
+                    </>)}
+            </Button>
 
           </>
         }
