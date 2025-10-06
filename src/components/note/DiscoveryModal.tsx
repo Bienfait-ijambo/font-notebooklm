@@ -15,6 +15,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { searchWeb, sendTextData } from "@/api/notes";
 import { showError } from "@/util/toast-notification";
+import { fetchSingleNote } from "@/store/chatSlice";
 
 
 const FormSchema = z.object({
@@ -32,8 +33,12 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
   const [sendWebResultLoading, setSendWebResultLoading] = useState(false)
 
 
+
+
+
   const dispatch = useDispatch<AppDispatch>();
   const { modal } = useSelector((state: RootState) => state.discoveryModal);
+    
   const userData = getUserData()
 
   const {
@@ -51,10 +56,9 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
 
     if (serverData) {
       setSearchResult(serverData?.data)
+      console.log(serverData)
       // reset()
-      console.log("✅ search data", serverData);
 
-      console.log('re :  ', searchResult)
 
     }
 
@@ -63,18 +67,19 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
 
   async function sendWebResult() {
     try {
-     if(searchResult.length>0){
-       setSendWebResultLoading(true)
-      for (const webResult of searchResult) {
-        await sendTextData(webResult?.text,noteId)
+      if (searchResult.length > 0) {
+        setSendWebResultLoading(true)
+        for (const webResult of searchResult) {
+          await sendTextData(webResult?.text, noteId)
+        }
+        setSendWebResultLoading(false)
+       
+        dispatch(toggleDiscoveryModal())
+
+
+      } else {
+        showError('No source provided')
       }
-      setSendWebResultLoading(false)
-      dispatch(toggleDiscoveryModal())
-
-
-     }else{
-      showError('No source provided')
-     }
     } catch (error) {
       setSendWebResultLoading(false)
     }
@@ -101,16 +106,16 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
         height={600}
         footer={
           <>
-  <Button variant="outline" onClick={() =>  dispatch(toggleDiscoveryModal())}>
+            <Button variant="outline" onClick={() => dispatch(toggleDiscoveryModal())}>
               Cancel
             </Button>
             <Button onClick={sendWebResult} disabled={sendWebResultLoading}>
-              {sendWebResultLoading?(<>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      searching...
-                    </>):(<>
-                    Submit
-                    </>)}
+              {sendWebResultLoading ? (<>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>) : (<>
+                Submit
+              </>)}
             </Button>
 
           </>

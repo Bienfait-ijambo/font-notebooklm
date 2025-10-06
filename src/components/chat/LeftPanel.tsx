@@ -20,9 +20,11 @@ import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 
 type LeftPanelProps = {
   note: NoteType;
+  loading: boolean
+
 };
 
-const LeftPanel = ({ note }: LeftPanelProps) => {
+const LeftPanel = ({ note, loading }: LeftPanelProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { leftPanelOpen } = useSelector((state: RootState) => state.chat);
 
@@ -42,11 +44,10 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
 
   return (
     <div
-      className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${
-        leftPanelOpen
-          ? "w-[25%] p-4 rounded-md"
-          : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
-      }`}
+      className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${leftPanelOpen
+        ? "w-[25%] p-4 rounded-md"
+        : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
+        }`}
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-2 flex-shrink-0">
@@ -97,36 +98,60 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
       {/* Body */}
       <div className="flex-1 overflow-y-auto mt-4 pr-2">
         {leftPanelOpen ? (
-          note?.docs?.length ? (
 
-            
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Checkbox checked={false} />
-                <span className="text-sm font-medium">Select all sources</span>
-              </div>
-               {/* <DocRowSkeleton count={10} /> */}
-              {note?.docs?.map((doc) => (
-                <div
-                  key={doc._id}
-                  className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
-                >
-                  <FileText className="text-blue-500" size={20} />
-                  <span className="flex-1 text-sm truncate">{doc?.title}</span>
-                  <Checkbox checked={false} />
-                </div>
-              ))}
-            </div>
+
+          loading ? (
+            <>
+              <DocRowSkeleton count={11} />
+            </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <NotepadText className="text-gray-500 mx-auto" size={60} />
-              <p className="text-sm text-gray-400 font-semibold mt-4 px-3">
-                Saved sources will appear here. Click Add source above to add
-                PDFs, websites, text, videos, or audio files. Or import a file
-                directly from Google Drive.
-              </p>
-            </div>
+
+            <>
+              {
+
+                note?.docs?.length ? (
+
+
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Checkbox checked={false} />
+                      <span className="text-sm font-medium">Select all sources</span>
+                    </div>
+
+
+
+
+                    {
+                      note?.docs?.map((doc) => (
+                        <div
+                          key={doc._id}
+                          className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
+                        >
+                          <FileText className="text-blue-500" size={20} />
+                          <span className="flex-1 text-sm truncate">{doc?.title}</span>
+                          <Checkbox checked={false} />
+                        </div>
+                      ))}
+
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-center">
+                    <NotepadText className="text-gray-500 mx-auto" size={60} />
+                    <p className="text-sm text-gray-400 font-semibold mt-4 px-3">
+                      Saved sources will appear here. Click Add source above to add
+                      PDFs, websites, text, videos, or audio files. Or import a file
+                      directly from Google Drive.
+                    </p>
+                  </div>
+                )
+              }
+            </>
           )
+
+
+
+
+
         ) : (
           <div className="flex flex-col items-center mt-6  pl-3  gap-4">
             {note?.docs.map((doc) => (
@@ -148,7 +173,7 @@ type DocRowSkeletonProps = {
   count?: number; // number of rows to render
 };
 
- const DocRowSkeleton: React.FC<DocRowSkeletonProps> = ({ count = 5 }) => {
+const DocRowSkeleton: React.FC<DocRowSkeletonProps> = ({ count = 5 }) => {
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, idx) => (

@@ -17,7 +17,7 @@ function ChatPage() {
 
 
   const dispatch = useDispatch<AppDispatch>();
-  const { note } = useSelector((state: RootState) => state.chat);
+  const { note, } = useSelector((state: RootState) => state.chat);
 
 
   useEffect(() => {
@@ -50,6 +50,7 @@ function ChatPage() {
         </div>
         <div className='mr-4'>
           {/* header actions here */}
+         
           <UserAvatar />
         </div>
       </div>
@@ -58,7 +59,7 @@ function ChatPage() {
       <div className="flex h-screen gap-4">
 
 
-        <LeftPanel note={note} />
+        <LeftPanel note={note}  />
         <MiddlePanel></MiddlePanel>
         <RightPanel />
 
