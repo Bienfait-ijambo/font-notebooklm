@@ -17,6 +17,7 @@ import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
 import type { NoteType } from "@/types/note-types";
 import { Checkbox } from "../ui/checkbox";
 import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
+import { useState } from "react";
 
 type LeftPanelProps = {
   note: NoteType;
@@ -39,14 +40,29 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
   function toggleDocCheck(id: number) {
     console.log(id);
   }
+  // State to track selected doc IDs
+  const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
 
+  // Function to handle checkbox toggle (multi-select)
+  function handleDocSelect(docId: string) {
+    setSelectedDocs((prev) => {
+      if (prev.includes(docId)) {
+        // If already selected, remove it (deselect)
+        return prev.filter((id) => id !== docId);
+      } else {
+        // If not selected, add it
+        return [...prev, docId];
+      }
+    });
+
+    console.log("Currently selected doc IDs:", selectedDocs);
+  }
   return (
     <div
-      className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${
-        leftPanelOpen
+      className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${leftPanelOpen
           ? "w-[25%] p-4 rounded-md"
           : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
-      }`}
+        }`}
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-2 flex-shrink-0">
@@ -99,13 +115,13 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
         {leftPanelOpen ? (
           note?.docs?.length ? (
 
-            
+
             <div className="space-y-3">
               <div className="flex items-center gap-2 mb-2">
                 <Checkbox checked={false} />
                 <span className="text-sm font-medium">Select all sources</span>
               </div>
-               {/* <DocRowSkeleton count={10} /> */}
+              {/* <DocRowSkeleton count={10} /> */}
               {note?.docs?.map((doc) => (
                 <div
                   key={doc._id}
@@ -113,7 +129,11 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
                 >
                   <FileText className="text-blue-500" size={20} />
                   <span className="flex-1 text-sm truncate">{doc?.title}</span>
-                  <Checkbox checked={false} />
+                  <Checkbox
+
+                    checked={selectedDocs.includes(doc._id)}
+                    onCheckedChange={() => handleDocSelect(doc._id)}
+                  />
                 </div>
               ))}
             </div>
@@ -148,7 +168,7 @@ type DocRowSkeletonProps = {
   count?: number; // number of rows to render
 };
 
- const DocRowSkeleton: React.FC<DocRowSkeletonProps> = ({ count = 5 }) => {
+const DocRowSkeleton: React.FC<DocRowSkeletonProps> = ({ count = 5 }) => {
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, idx) => (
