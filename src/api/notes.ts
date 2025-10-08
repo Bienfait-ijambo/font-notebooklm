@@ -129,17 +129,16 @@ export const updateNote = async ( noteId: string,title:string) => {
 
 
 
-// export const createSummary = async ( noteId?: string) => {
-//     try {
-//         const userData = getUserData()
-//         const userId = userData?._id
+export const createSummary = async ( noteId: string,docIds:string[]) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
 
-//         const data = await makeHttpReq('PUT', `notes/summary`,
-//              {  userId, noteId }) 
-//         console.log('add weblink : ',data)
+        const data = await makeHttpReq('POST', `notes/summary`,
+             {  userId, noteId ,docIds}) 
 
-//     } catch (error) {
-//         console.log('error : ', error)
-//     }
+    } catch (error) {
+        console.log('error : ', error)
+    }
 
-// };
+};

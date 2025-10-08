@@ -4,8 +4,6 @@ export const addSourceSlice= createSlice({
     name: 'noteCreation',
     initialState: {
         modal: false,
-  
-      
     },
     reducers: {
         toggleAddSourceNoteModal: state => {
