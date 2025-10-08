@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { sendWeblink } from "@/api/notes";
 
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "@/store";
+import { fetchSingleNote } from "@/store/chatSlice";
 // 1. Schema validation with Zod
 const formSchema = z.object({
     weblink: z
@@ -21,6 +24,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 const AddWebLinkForm = ({ hideWebLinkForm,noteId }: { hideWebLinkForm: () => void,noteId?:string }) => {
     // 2. Setup react-hook-form with Zod resolver
+    
+      const dispatch = useDispatch<AppDispatch>();
     const {
         register,
         handleSubmit,
@@ -34,6 +39,7 @@ const AddWebLinkForm = ({ hideWebLinkForm,noteId }: { hideWebLinkForm: () => voi
     const onSubmit = async (data: FormValues) => {
 
       await  sendWeblink(data?.weblink,noteId)
+       dispatch(fetchSingleNote(noteId as string))
 
         // Reset form after submit
         reset();

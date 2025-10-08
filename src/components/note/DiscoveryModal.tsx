@@ -15,6 +15,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { searchWeb, sendTextData } from "@/api/notes";
 import { showError } from "@/util/toast-notification";
+import { fetchSingleNote } from "@/store/chatSlice";
+
 
 
 const FormSchema = z.object({
@@ -70,6 +72,7 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
       }
       setSendWebResultLoading(false)
       dispatch(toggleDiscoveryModal())
+      dispatch(fetchSingleNote(noteId as string))
 
 
      }else{

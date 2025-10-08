@@ -21,9 +21,10 @@ import { useState } from "react";
 
 type LeftPanelProps = {
   note: NoteType;
+  loading:boolean
 };
 
-const LeftPanel = ({ note }: LeftPanelProps) => {
+const LeftPanel = ({ note ,loading}: LeftPanelProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { leftPanelOpen } = useSelector((state: RootState) => state.chat);
 
@@ -112,9 +113,13 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto mt-4 pr-2">
-        {leftPanelOpen ? (
-          note?.docs?.length ? (
+        
 
+        {leftPanelOpen ? (
+          
+          loading ? <DocRowSkeleton  count={12}/>:
+         
+          note?.docs?.length ? (
 
             <div className="space-y-3">
               <div className="flex items-center gap-2 mb-2">
@@ -147,6 +152,7 @@ const LeftPanel = ({ note }: LeftPanelProps) => {
               </p>
             </div>
           )
+          // end
         ) : (
           <div className="flex flex-col items-center mt-6  pl-3  gap-4">
             {note?.docs.map((doc) => (

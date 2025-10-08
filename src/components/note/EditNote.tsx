@@ -6,6 +6,7 @@ import { MoveLeft, Loader2,  } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router";
+import { updateNote } from "@/api/notes";
 
 // Schema validation with Zod
 const editNoteSchema = z.object({
@@ -28,7 +29,7 @@ export const EditNote = ({ note }: EditNoteProps ) => {
   } = useForm<EditNoteFormValues>({
     resolver: zodResolver(editNoteSchema),
     defaultValues: {
-      title:  note?.title || "",
+      title:  note?.title ,
     },
   });
 
@@ -37,7 +38,7 @@ export const EditNote = ({ note }: EditNoteProps ) => {
     const data = getValues();
     if (!errors.title) {
     //   await onSave(data);
-    console.log('make http req',data,note)
+    await updateNote(note?._id as string,data?.title)
     }
   };
 
@@ -56,9 +57,8 @@ export const EditNote = ({ note }: EditNoteProps ) => {
           <Input
             id="title"
             {...register("title")}
-            value={note?.title}
             onBlur={handleBlur}
-            className="w-full min-w-[300px]  max-w-sm bg-transparent border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-800 text-base font-medium"
+            className="border-none font-semibold focus:ring-0 focus:border-0 outline-none bg-transparent"
           />
          
           {errors.title && (

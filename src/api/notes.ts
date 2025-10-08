@@ -2,6 +2,7 @@ import { apiUrl } from "@/config/get-env";
 import { getUserData } from "@/helper/getUserData";
 import { makeHttpReq } from "@/helper/makeHttpReq";
 import type { NoteServerData, NoteType } from "@/types/note-types";
+import { showSuccess } from "@/util/toast-notification";
 
 
 export async function getNotes(page = 1, search: string = ''): Promise<NoteServerData> {
@@ -109,3 +110,36 @@ export const searchWeb = async (query: string) => {
 
 };
 
+
+
+
+export const updateNote = async ( noteId: string,title:string) => {
+    try {
+     
+        const data = await makeHttpReq('PUT', `notes`,
+             {  title, id:noteId }) 
+        console.log('note updated : ',data)
+        showSuccess(data?.message as string)
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+
+// export const createSummary = async ( noteId?: string) => {
+//     try {
+//         const userData = getUserData()
+//         const userId = userData?._id
+
+//         const data = await makeHttpReq('PUT', `notes/summary`,
+//              {  userId, noteId }) 
+//         console.log('add weblink : ',data)
+
+//     } catch (error) {
+//         console.log('error : ', error)
+//     }
+
+// };

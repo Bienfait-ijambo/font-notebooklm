@@ -6,6 +6,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { sendTextData } from "@/api/notes";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import { fetchSingleNote } from "@/store/chatSlice";
 
 const pasteTextSchema = z.object({
     text: z
@@ -18,6 +21,10 @@ type PasteTextFormValues = z.infer<typeof pasteTextSchema>;
 
 export const AddPasteTextForm = ({ hidePasteTextForm, noteId }: { hidePasteTextForm: () => void, noteId?: string }) => {
 
+
+      const dispatch = useDispatch<AppDispatch>();
+
+  
     const {
         register,
         handleSubmit,
@@ -30,6 +37,7 @@ export const AddPasteTextForm = ({ hidePasteTextForm, noteId }: { hidePasteTextF
     const onSubmit = async (data: PasteTextFormValues) => {
 
         await sendTextData(data?.text, noteId)
+         dispatch(fetchSingleNote(noteId as string))
         reset()
         console.log("✅ Submitted Paste Text:", data);
 
