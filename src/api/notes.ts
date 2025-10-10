@@ -28,7 +28,7 @@ const downloadFileInDrive = async (fileId: string, noteId?: string) => {
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/drive-files`,
-             { fileId, userId, noteId }) as NoteServerData
+            { fileId, userId, noteId }) as NoteServerData
         console.log(data)
 
     } catch (error) {
@@ -39,14 +39,14 @@ const downloadFileInDrive = async (fileId: string, noteId?: string) => {
 
 
 export const uploadPickedFiles = async (docs: any[], noteId: string) => {
-  if(Array.isArray(docs)){
-      
-    for (const doc of docs) {
-       await downloadFileInDrive(doc.id, noteId);
-    
-    }
+    if (Array.isArray(docs)) {
 
-  }
+        for (const doc of docs) {
+            await downloadFileInDrive(doc.id, noteId);
+
+        }
+
+    }
 };
 
 
@@ -56,8 +56,8 @@ export const sendWeblink = async (webLink: string, noteId?: string) => {
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/weblinkdata`,
-             { webLink, userId, noteId }) 
-        console.log('add weblink : ',data)
+            { webLink, userId, noteId })
+        console.log('add weblink : ', data)
 
     } catch (error) {
         console.log('error : ', error)
@@ -72,8 +72,8 @@ export const sendTextData = async (text: string, noteId?: string) => {
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/text-data`,
-             { text, userId, noteId }) 
-        console.log('add text : ',data)
+            { text, userId, noteId })
+        console.log('add text : ', data)
 
     } catch (error) {
         console.log('error : ', error)
@@ -89,8 +89,8 @@ export const sendYoutubeLink = async (youtubeLink: string, noteId?: string) => {
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/youtube-link`,
-             { youtubeLink, userId, noteId }) 
-        console.log('add text : ',data)
+            { youtubeLink, userId, noteId })
+        console.log('add text : ', data)
 
     } catch (error) {
         console.log('error : ', error)
@@ -101,9 +101,9 @@ export const sendYoutubeLink = async (youtubeLink: string, noteId?: string) => {
 
 export const searchWeb = async (query: string) => {
     try {
-       
-        const data = await makeHttpReq('GET', `notes/search/web?query=${query}`) 
-       return data
+
+        const data = await makeHttpReq('GET', `notes/search/web?query=${query}`)
+        return data
     } catch (error) {
         console.log('error : ', error)
     }
@@ -113,12 +113,12 @@ export const searchWeb = async (query: string) => {
 
 
 
-export const updateNote = async ( noteId: string,title:string) => {
+export const updateNote = async (noteId: string, title: string) => {
     try {
-     
+
         const data = await makeHttpReq('PUT', `notes`,
-             {  title, id:noteId }) 
-        console.log('note updated : ',data)
+            { title, id: noteId })
+        console.log('note updated : ', data)
         showSuccess(data?.message as string)
 
     } catch (error) {
@@ -129,16 +129,209 @@ export const updateNote = async ( noteId: string,title:string) => {
 
 
 
-export const createSummary = async ( noteId: string,docIds:string[]) => {
+export const createSummary = async (noteId: string, docIds: string[]) => {
     try {
         const userData = getUserData()
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/summary`,
-             {  userId, noteId ,docIds}) 
+            { userId, noteId, docIds })
 
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateSummarySource(userId, noteId, docIds)
+        }
     } catch (error) {
         console.log('error : ', error)
     }
 
 };
+
+
+export const generateSummarySource = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+
+
+// faq
+
+
+export const createFAQ= async (noteId: string, docIds: string[]) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/faq`,
+            { userId, noteId, docIds })
+
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateFAQSource(userId, noteId, docIds)
+        }
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const generateFAQSource = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/faq/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+// end faq
+
+
+
+
+// study guide
+
+
+
+export const createStudyGuide= async (noteId: string, docIds: string[]) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/studyguide`,
+            { userId, noteId, docIds })
+
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateStudyguide(userId, noteId, docIds)
+        }
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const generateStudyguide = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/studyguide/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+
+// briefing doc
+
+
+
+
+
+// mindMap
+
+
+
+
+export const createMindMap= async (noteId: string, docIds: string[]) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/mindmap`,
+            { userId, noteId, docIds })
+
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateMindMap(userId, noteId, docIds)
+        }
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const generateMindMap = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/mindmap/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+// end
+
+
+
+
+export const createBriefingDoc= async (noteId: string, docIds: string[]) => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/briefingdoc`,
+            { userId, noteId, docIds })
+
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateBriefingDoc(userId, noteId, docIds)
+        }
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/briefingdoc/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+
+
+export async function getSourceResults(noteId: string) {
+    const userData = getUserData()
+    const userId = userData?._id
+    const data = await makeHttpReq('GET', `notes/source/results?noteId=${noteId}&userId=${userId}`)
+    return data
+
+
+}

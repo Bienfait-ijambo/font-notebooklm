@@ -1,9 +1,9 @@
 
-import { PanelRight, Sparkles, Video, GitBranch, FileText, Star, HelpCircle, Pencil, NotepadText } from "lucide-react";
+import { PanelRight, Sparkles, Video, GitBranch, FileText, Star, HelpCircle, Pencil, NotepadText, AwardIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/stores";
 import { addExtraWidth, reduceExtraWidth, toggleRightPanel } from "@/store/chatSlice";
+import './animate.css'
 
 import {
   DropdownMenu,
@@ -12,11 +12,28 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { createBriefingDoc, createFAQ, createMindMap, createStudyGuide, createSummary } from "@/api/notes";
+import type { AppDispatch, RootState } from "@/store";
+import { showError } from "@/util/toast-notification";
+import { useEffect, useState } from "react";
+import { fetchNoteSourceResult, closeSourceModal, showSourceModalContent } from "@/store/rightPanelSlice";
+import { truncateTitle } from "@/util/truncateTitle";
+import { SourceModal } from "../note/rightpanel/SourceModal";
 
-const RightPanel = () => {
+const RightPanel = ({ noteId }: { noteId: string }) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { rightPanelOpen } = useSelector((state: RootState) => state.chat);
+  const { docIds, sources, sourceModal } = useSelector((state: RootState) => state.rightPanel);
+
+  function showSourceModal(source: any) {
+    dispatch(showSourceModalContent(source))
+  }
+  function fetchSources() {
+    dispatch(fetchNoteSourceResult(noteId))
+
+  }
+
 
   function togglePanel() {
     if (rightPanelOpen) {
@@ -31,20 +48,26 @@ const RightPanel = () => {
 
   }
 
-  const note = {
-    docs: [
-      {
-        _id: "dkkdk",
-        title: "hello world"
-      }
-    ]
+
+  async function generateMindMap() {
+
+    if (docIds.length > 0) {
+      await createMindMap(noteId, docIds)
+    } else {
+      showError("Please select a source");
+    }
+
   }
 
   return (
+
+
     <div
       className={`bg-white shadow-md rounded-sm h-full transition-all duration-300 ml-auto mr-auto ${rightPanelOpen ? "w-[25%] p-4" : "w-16 p-2"
         }`}
     >
+      <SourceModal />
+
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
         {rightPanelOpen && <p className="text-base text-gray-800">Studio</p>}
@@ -63,8 +86,8 @@ const RightPanel = () => {
       <div className={`mt-4 grid ${rightPanelOpen ? "grid-cols-2 gap-4" : "grid-cols-1 gap-3"}`}>
         <PanelItem rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
         <PanelItem rightPanelOpen={rightPanelOpen} icon={<Video />} label="Video Overview" />
-        <PanelItem rightPanelOpen={rightPanelOpen} icon={<GitBranch />} label="Mind Map" />
-        <ReportPanelItem rightPanelOpen={rightPanelOpen} />
+        <PanelItem generateSource={generateMindMap} rightPanelOpen={rightPanelOpen} icon={<GitBranch />}  label="Mind Map" />
+        <ReportPanelItem rightPanelOpen={rightPanelOpen} fetchSources={fetchSources} noteId={noteId} docIds={docIds} />
       </div>
 
 
@@ -74,30 +97,30 @@ const RightPanel = () => {
       {rightPanelOpen ? (
 
 
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-[400px] overflow-y-auto ">
 
-          {/* <DocRowSkeleton count={10} /> */}
-          {/* {note?.docs?.map((doc) => (
+          {Array.isArray(sources) && sources.map((source) => (
             <div
-              key={doc._id}
+              key={source._id}
+              onClick={() => showSourceModal(source)}
               className="flex cursor-pointer items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
             >
               <FileText className="text-blue-500" size={20} />
               <div className="flex flex-col">
-                <span className="flex-1 text-sm truncate">{doc?.title}</span>
-                <span className="text-xs">5 sources</span>
+                <span className="flex-1 text-base truncate"> {truncateTitle(source?.title, 40) || 'No title'}  </span>
+                <span className="text-xs">{source?.source_type} - {source?.total_source}  sources</span>
               </div>
             </div>
-          ))} */}
+          ))}
         </div>
 
       ) : (
         <div className="flex flex-col items-center mt-6  pl-1  gap-4">
-          {note?.docs.map((doc) => (
+          {/* {note?.docs.map((doc) => (
             <Button key={doc._id} variant="outline" size="icon">
               <FileText className="text-blue-500" size={20} />
             </Button>
-          ))}
+          ))} */}
         </div>
       )}
 
@@ -118,9 +141,10 @@ const RightPanel = () => {
   );
 };
 
-const PanelItem = ({ icon, label, rightPanelOpen }: { icon: React.ReactNode; label: string; rightPanelOpen: boolean }) => {
+const PanelItem = ({ icon, label, rightPanelOpen,generateSource }: { icon: React.ReactNode; label: string; rightPanelOpen: boolean ,generateSource:()=>void}) => {
   return (
     <div
+    onClick={generateSource}
       className={`flex items-center justify-center  rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"
 
         }  ${label == 'Mind Map' ? 'bg-orange-50' : ''} `}
@@ -133,22 +157,62 @@ const PanelItem = ({ icon, label, rightPanelOpen }: { icon: React.ReactNode; lab
 
 
 
+
 // / 🧾 Report menu (with dropdown)
-const ReportPanelItem = ({ rightPanelOpen }: { rightPanelOpen: boolean }) => {
+const ReportPanelItem = ({ rightPanelOpen, noteId, docIds, fetchSources }: { rightPanelOpen: boolean, noteId: string, docIds: string[], fetchSources: () => void }) => {
   const menuItems = ["Summary", "Study Guide", "Briefing Doc", "FAQ"];
+  const [loading, setLoading] = useState(false);
+
+  async function generateSource(item: string) {
+    if (docIds.length > 0) {
+      setLoading(true);
+      if (item === "Summary") {
+
+
+        await createSummary(noteId, docIds);
+
+
+
+      }
+      else if (item === "FAQ") {
+
+        await createFAQ(noteId, docIds)
+      } else if (item === "Study Guide") {
+        await createStudyGuide(noteId, docIds)
+      }
+      else if (item === "Briefing Doc") {
+        await createBriefingDoc(noteId, docIds)
+      }
+
+      fetchSources()
+
+      setLoading(false);
+    } else {
+      showError("Please select a source");
+    }
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div
-          className={`flex items-center justify-center rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"
-            }`}
+          className={`flex items-center justify-center rounded-md bg-blue-50 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"}`}
         >
-          <FileText />
+          {loading ? (
+            <div className="animated-gradient-border w-full h-full flex items-center justify-center">
+              <div className="animated-gradient-inner flex items-center justify-center">
+                <FileText />
+              </div>
+            </div>
+          ) : (
+            <FileText />
+          )}
+
           {rightPanelOpen && (
             <span className="mt-2 text-sm font-medium text-gray-700">
               Reports
             </span>
+
           )}
         </div>
       </DropdownMenuTrigger>
@@ -157,7 +221,7 @@ const ReportPanelItem = ({ rightPanelOpen }: { rightPanelOpen: boolean }) => {
         {menuItems.map((item) => (
           <DropdownMenuItem
             key={item}
-            onClick={() => console.log("Selected:", item)}
+            onClick={() => generateSource(item)}
             className="cursor-pointer"
           >
             {item}
@@ -167,6 +231,8 @@ const ReportPanelItem = ({ rightPanelOpen }: { rightPanelOpen: boolean }) => {
     </DropdownMenu>
   );
 };
+
+
 
 
 export default RightPanel;

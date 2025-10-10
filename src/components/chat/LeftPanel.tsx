@@ -18,13 +18,14 @@ import type { NoteType } from "@/types/note-types";
 import { Checkbox } from "../ui/checkbox";
 import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 import { useState } from "react";
+import { addDocIds } from "@/store/rightPanelSlice";
 
 type LeftPanelProps = {
   note: NoteType;
-  loading:boolean
+  loading: boolean
 };
 
-const LeftPanel = ({ note ,loading}: LeftPanelProps) => {
+const LeftPanel = ({ note, loading }: LeftPanelProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { leftPanelOpen } = useSelector((state: RootState) => state.chat);
 
@@ -38,31 +39,28 @@ const LeftPanel = ({ note ,loading}: LeftPanelProps) => {
     }
   }
 
-  function toggleDocCheck(id: number) {
-    console.log(id);
-  }
   // State to track selected doc IDs
   const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
 
-  // Function to handle checkbox toggle (multi-select)
-  function handleDocSelect(docId: string) {
-    setSelectedDocs((prev) => {
-      if (prev.includes(docId)) {
-        // If already selected, remove it (deselect)
-        return prev.filter((id) => id !== docId);
-      } else {
-        // If not selected, add it
-        return [...prev, docId];
-      }
-    });
 
-    console.log("Currently selected doc IDs:", selectedDocs);
-  }
+ function handleDocSelect(docId: string) {
+  setSelectedDocs((prev: string[]) =>
+    prev.includes(docId)
+      ? prev.filter((id) => id !== docId) // remove if exists
+      : [...prev, docId] // add if not exists
+  );
+
+  dispatch(addDocIds(docId)); 
+}
+
+
+
+
   return (
     <div
       className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${leftPanelOpen
-          ? "w-[25%] p-4 rounded-md"
-          : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
+        ? "w-[25%] p-4 rounded-md"
+        : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
         }`}
     >
       {/* Header */}
@@ -81,6 +79,7 @@ const LeftPanel = ({ note ,loading}: LeftPanelProps) => {
       {leftPanelOpen && <hr className="mb-2" />}
 
       {/* Buttons */}
+
       <div className="flex-shrink-0">
         {leftPanelOpen ? (
           <div className="flex mt-3 justify-between">
@@ -113,45 +112,44 @@ const LeftPanel = ({ note ,loading}: LeftPanelProps) => {
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto mt-4 pr-2">
-        
 
         {leftPanelOpen ? (
-          
-          loading ? <DocRowSkeleton  count={12}/>:
-         
-          note?.docs?.length ? (
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Checkbox checked={false} />
-                <span className="text-sm font-medium">Select all sources</span>
-              </div>
-              {/* <DocRowSkeleton count={10} /> */}
-              {note?.docs?.map((doc) => (
-                <div
-                  key={doc._id}
-                  className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
-                >
-                  <FileText className="text-blue-500" size={20} />
-                  <span className="flex-1 text-sm truncate">{doc?.title}</span>
-                  <Checkbox
+          loading ? <DocRowSkeleton count={12} /> :
 
-                    checked={selectedDocs.includes(doc._id)}
-                    onCheckedChange={() => handleDocSelect(doc._id)}
-                  />
+            note?.docs?.length ? (
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Checkbox checked={false} />
+                  <span className="text-sm font-medium">Select all sources</span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <NotepadText className="text-gray-500 mx-auto" size={60} />
-              <p className="text-sm text-gray-400 font-semibold mt-4 px-3">
-                Saved sources will appear here. Click Add source above to add
-                PDFs, websites, text, videos, or audio files. Or import a file
-                directly from Google Drive.
-              </p>
-            </div>
-          )
+                {/* <DocRowSkeleton count={10} /> */}
+                {note?.docs?.map((doc) => (
+                  <div
+                    key={doc._id}
+                    className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
+                  >
+                    <FileText className="text-blue-500" size={20} />
+                    <span className="flex-1 text-sm truncate">{doc?.title}</span>
+                    <Checkbox
+                      className="cursor-pointer"
+                      checked={selectedDocs.includes(doc._id)}
+                      onCheckedChange={() => handleDocSelect(doc._id)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <NotepadText className="text-gray-500 mx-auto" size={60} />
+                <p className="text-sm text-gray-400 font-semibold mt-4 px-3">
+                  Saved sources will appear here. Click Add source above to add
+                  PDFs, websites, text, videos, or audio files. Or import a file
+                  directly from Google Drive.
+                </p>
+              </div>
+            )
           // end
         ) : (
           <div className="flex flex-col items-center mt-6  pl-3  gap-4">

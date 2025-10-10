@@ -29,9 +29,11 @@
     "react-google-drive-picker": "^1.1.4",
     "react-google-picker": "^0.1.0",
     "react-hook-form": "^7.62.0",
+    "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.8.2",
     "react-toastify": "^11.0.5",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.13",
     "zod": "^4.1.11"

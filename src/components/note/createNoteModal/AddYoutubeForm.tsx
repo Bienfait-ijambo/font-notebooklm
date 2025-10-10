@@ -12,6 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { sendWeblink, sendYoutubeLink } from "@/api/notes";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/store";
+import { fetchSingleNote } from "@/store/chatSlice";
 
 // 1. Schema validation with Zod
 const formSchema = z.object({
@@ -25,6 +28,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const AddYoutubeLinkForm = ({ hideYoutubeLinkForm,noteId }: { hideYoutubeLinkForm: () => void,noteId?:string }) => {
     // 2. Setup react-hook-form with Zod resolver
+      const dispatch = useDispatch<AppDispatch>();
     const {
         register,
         handleSubmit,
@@ -38,6 +42,8 @@ const AddYoutubeLinkForm = ({ hideYoutubeLinkForm,noteId }: { hideYoutubeLinkFor
     const onSubmit = async (data: FormValues) => {
 
       await  sendYoutubeLink(data?.youtubeLink,noteId)
+       dispatch(fetchSingleNote(noteId as string))
+      
 
         // Reset form after submit
         reset();

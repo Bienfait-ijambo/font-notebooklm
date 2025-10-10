@@ -11,6 +11,7 @@ import { MoveLeft } from 'lucide-react'
 import UserAvatar from '@/components/base/UserAvatar'
 import DiscoveryModal from '@/components/note/DiscoveryModal'
 import { EditNote } from '@/components/note/EditNote'
+import { fetchNoteSourceResult } from '@/store/rightPanelSlice'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -25,6 +26,8 @@ function ChatPage() {
 
     if (id) {
       dispatch(fetchSingleNote(id))
+      dispatch(fetchNoteSourceResult(id))
+
 
     }
   }, [dispatch, id]);
@@ -48,7 +51,7 @@ function ChatPage() {
 
         <LeftPanel loading={loading} note={note} />
         <MiddlePanel></MiddlePanel>
-        <RightPanel />
+        <RightPanel noteId={id}/>
 
         <CreateNoteModal noteId={id} ></CreateNoteModal>
         <DiscoveryModal noteId={id}></DiscoveryModal>

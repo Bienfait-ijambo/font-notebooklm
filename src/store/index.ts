@@ -4,12 +4,14 @@ import { useDispatch } from "react-redux";
 import notesSlice from './noteSlice'
 import  addSourceSlice  from "./addSourceSlice";
 import discoveryModalSlice from './discoveryModalSlice'
+import rightPanelSlice from './rightPanelSlice'
 export const store = configureStore({
   reducer: {
      chat:chatSlice,
      note:notesSlice,
      addSource:addSourceSlice,
-     discoveryModal:discoveryModalSlice
+     discoveryModal:discoveryModalSlice,
+     rightPanel:rightPanelSlice
   },
 })
 export type RootState = ReturnType<typeof store.getState>;

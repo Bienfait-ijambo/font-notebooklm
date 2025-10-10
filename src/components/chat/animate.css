@@ -1,0 +1,23 @@
+/* in your global CSS or tailwind config */
+@layer utilities {
+  @keyframes gradient-border {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animated-gradient-border {
+    background: linear-gradient(270deg, #ff0080, #7928ca, #00f5ff, #fffc00);
+    background-size: 600% 600%;
+    animation: gradient-border 3s ease infinite;
+    border-radius: 0.5rem; /* same as your div rounding */
+    padding: 2px; /* outer border size */
+  }
+
+  .animated-gradient-inner {
+    border-radius: 0.5rem; /* match outer */
+    background: white; /* inner content */
+    width: 100%;
+    height: 100%;
+  }
+}

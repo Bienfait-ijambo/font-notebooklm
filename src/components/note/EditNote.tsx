@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router";
 import { updateNote } from "@/api/notes";
+import { useEffect } from "react";
 
 // Schema validation with Zod
 const editNoteSchema = z.object({
@@ -29,9 +30,19 @@ export const EditNote = ({ note }: EditNoteProps ) => {
   } = useForm<EditNoteFormValues>({
     resolver: zodResolver(editNoteSchema),
     defaultValues: {
-      title:  note?.title ,
+      title:  "" ,
     },
   });
+
+
+
+    // 🧠 When note data changes (e.g., from API), update the form value
+  useEffect(() => {
+    if (note?.title) {
+      setValue("title", note.title)
+    }
+  }, [note, setValue])
+
 
   // Submit only on blur
   const handleBlur = async () => {
@@ -51,7 +62,7 @@ export const EditNote = ({ note }: EditNoteProps ) => {
           >
             <MoveLeft size={18} />
           </Link>
-
+{/* <span style={{ fontSize: "3rem", lineHeight: "1.2" }}>🧠✨</span> */}
         <div className="flex-1">
          
           <Input

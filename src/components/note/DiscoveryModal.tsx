@@ -23,7 +23,7 @@ const FormSchema = z.object({
   query: z
     .string()
     .min(3, "Text must be at least 50 characters")
-    .max(50, "Text is too long"),
+    .max(100, "Text is too long"),
 });
 
 type FormType = z.infer<typeof FormSchema>;
@@ -110,7 +110,7 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
             <Button onClick={sendWebResult} disabled={sendWebResultLoading}>
               {sendWebResultLoading?(<>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      searching...
+                      submitting...
                     </>):(<>
                     Submit
                     </>)}

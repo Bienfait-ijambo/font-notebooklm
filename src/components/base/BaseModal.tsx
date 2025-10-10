@@ -41,7 +41,7 @@ export function BaseModal({
   }}>
         {(title || description) && (
           <DialogHeader>
-            {title && <DialogTitle>{title}</DialogTitle>}
+            {title && <DialogTitle className="text-gray-500">{title}</DialogTitle>}
             {description && (
               <DialogDescription>{description}</DialogDescription>
             )}
