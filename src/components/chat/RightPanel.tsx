@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { fetchNoteSourceResult, closeSourceModal, showSourceModalContent } from "@/store/rightPanelSlice";
 import { truncateTitle } from "@/util/truncateTitle";
 import { SourceModal } from "../note/rightpanel/SourceModal";
+import MindMapSourceModal from "../note/rightpanel/MindMapSourceModal";
 
 const RightPanel = ({ noteId }: { noteId: string }) => {
 
@@ -67,6 +68,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
         }`}
     >
       <SourceModal />
+      <MindMapSourceModal />
 
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
