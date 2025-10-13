@@ -11,10 +11,11 @@ export const fetchNoteSourceResult = createAsyncThunk(
 
 
 const sourceNoteResultState = {
-    sources: {} as Array<{total_source:number,content:string,noteId:string,userId:string}> ,
+    sources: {} as Array<{ total_source: number, content: string, noteId: string, userId: string }>,
     loading: false,
     error: null,
-    sourceModal:{modal:false,title:"",content:"",source_type:""}
+    sourceModal: { modal: false, title: "", content: "", source_type: "" },
+    mindMapModal: { modal: false, title: "", content: "", source_type: "" }
 };
 
 
@@ -29,19 +30,29 @@ export const rightPanelSlice = createSlice({
     },
     reducers: {
 
-          closeSourceModal: (state) => {
-            state.sourceModal.modal=false
-            state.sourceModal.title=''
-            state.sourceModal.content=''
 
-         
+closeMindMap: (state) => {
+            state.mindMapModal.modal = false
+            
         },
 
-        showSourceModalContent: (state, action: PayloadAction<{title:string,content:string,source_type:string}>) => {
-            state.sourceModal.modal=true
-            state.sourceModal.title=action.payload?.title
-            state.sourceModal.content=action.payload?.content
-            state.sourceModal.source_type=action.payload?.source_type
+        closeSourceModal: (state) => {
+            state.sourceModal.modal = false
+            state.sourceModal.title = ''
+            state.sourceModal.content = ''
+        },
+
+        showSourceModalContent: (state, action: PayloadAction<{ title: string, content: string, source_type: string }>) => {
+            if (action.payload.source_type.includes('mindMap')) {
+                state.mindMapModal.content = action.payload?.content
+                state.mindMapModal.modal = true
+            } else {
+                state.sourceModal.modal = true
+                state.sourceModal.title = action.payload?.title
+                state.sourceModal.content = action.payload?.content
+                state.sourceModal.source_type = action.payload?.source_type
+            }
+
 
 
 
@@ -75,7 +86,7 @@ export const rightPanelSlice = createSlice({
     },
 })
 
-export const { addDocIds,showSourceModalContent,closeSourceModal } = rightPanelSlice.actions
+export const { addDocIds, showSourceModalContent, closeSourceModal,closeMindMap } = rightPanelSlice.actions
 
 
 export default rightPanelSlice.reducer

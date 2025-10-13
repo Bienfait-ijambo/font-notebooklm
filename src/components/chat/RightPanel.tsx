@@ -99,7 +99,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
       {rightPanelOpen ? (
 
 
-        <div className="space-y-3 max-h-[400px] overflow-y-auto ">
+        <div className="space-y-3 max-h-[400px] overflow-y-auto  pb-10">
 
           {Array.isArray(sources) && sources.map((source) => (
             <div
@@ -109,7 +109,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
             >
               <FileText className="text-blue-500" size={20} />
               <div className="flex flex-col">
-                <span className="flex-1 text-base truncate"> {truncateTitle(source?.title, 40) || 'No title'}  </span>
+                <span className="flex-1 text-base truncate"> {truncateTitle(source?.title, 35) || 'No title'}  </span>
                 <span className="text-xs">{source?.source_type} - {source?.total_source}  sources</span>
               </div>
             </div>
