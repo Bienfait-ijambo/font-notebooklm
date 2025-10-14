@@ -20,6 +20,7 @@ import { fetchNoteSourceResult, closeSourceModal, showSourceModalContent } from 
 import { truncateTitle } from "@/util/truncateTitle";
 import { SourceModal } from "../note/rightpanel/SourceModal";
 import MindMapSourceModal from "../note/rightpanel/MindMapSourceModal";
+import AudioSection from "./AudioSection";
 
 const RightPanel = ({ noteId }: { noteId: string }) => {
 
@@ -54,17 +55,44 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
 
     if (docIds.length > 0) {
       await createMindMap(noteId, docIds)
+      fetchSources()
     } else {
       showError("Please select a source");
     }
 
   }
 
+
+
+  const [audioLoading, setAudioLoading] = useState(false);
+
+  async function generateAudio() {
+    if (docIds.length > 0) {
+      try {
+        setAudioLoading(true);
+
+
+        await createBriefingDoc(noteId, docIds, 'audio')
+
+        fetchSources()
+
+        setAudioLoading(false);
+
+      } catch (error) {
+        setAudioLoading(false);
+
+      }
+    } else {
+      showError("Please select a source");
+    }
+  }
+
+
   return (
 
 
     <div
-      className={`bg-white shadow-md rounded-sm h-full transition-all duration-300 ml-auto mr-auto ${rightPanelOpen ? "w-[25%] p-4" : "w-16 p-2"
+      className={`bg-white shadow-sm rounded-sm h-full transition-all duration-300 ml-auto mr-auto ${rightPanelOpen ? "w-[25%] p-4" : "w-16 p-2"
         }`}
     >
       <SourceModal />
@@ -86,11 +114,26 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
 
       {/* Content */}
       <div className={`mt-4 grid ${rightPanelOpen ? "grid-cols-2 gap-4" : "grid-cols-1 gap-3"}`}>
-        <PanelItem rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
+        <div
+          className= {`${audioLoading ? 'animated-gradient-border':''}`}  
+        >
+          <PanelItem  onClick={()=>generateAudio()} rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
+
+        </div>
+
         <PanelItem rightPanelOpen={rightPanelOpen} icon={<Video />} label="Video Overview" />
-        <PanelItem generateSource={generateMindMap} rightPanelOpen={rightPanelOpen} icon={<GitBranch />}  label="Mind Map" />
+        <PanelItem generateSource={generateMindMap} rightPanelOpen={rightPanelOpen} icon={<GitBranch />} label="Mind Map" />
+
         <ReportPanelItem rightPanelOpen={rightPanelOpen} fetchSources={fetchSources} noteId={noteId} docIds={docIds} />
       </div>
+
+      {/* 🎧 Audio Section */}
+      {rightPanelOpen && (
+        <AudioSection
+          audioUrl="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+          title="Project Summary - Audio"
+        />
+      )}
 
 
 
@@ -99,7 +142,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
       {rightPanelOpen ? (
 
 
-        <div className="space-y-3 max-h-[400px] overflow-y-auto  pb-10">
+        <div className="space-y-3 max-h-[220px] overflow-y-auto  pb-10">
 
           {Array.isArray(sources) && sources.map((source) => (
             <div
@@ -143,17 +186,21 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
   );
 };
 
-const PanelItem = ({ icon, label, rightPanelOpen,generateSource }: { icon: React.ReactNode; label: string; rightPanelOpen: boolean ,generateSource:()=>void}) => {
+const PanelItem = ({ icon, label, rightPanelOpen, generateSource }: { icon: React.ReactNode; label: string; rightPanelOpen: boolean, generateSource: () => void }) => {
   return (
-    <div
-    onClick={generateSource}
-      className={`flex items-center justify-center  rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"
 
-        }  ${label == 'Mind Map' ? 'bg-orange-50' : ''} `}
+    <div
+      onClick={generateSource}
+      className={`flex items-center  justify-center  rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"
+
+        }  ${label == 'Mind Map' ? 'bg-orange-50' : ''} ${label == 'Audio Overview' ? 'bg-green-50' : ''} `}
     >
       {icon}
-      {rightPanelOpen && <span className="mt-2 text-sm font-medium text-gray-700">{label}</span>}
+      {rightPanelOpen && <span className="mt-2 text-sm  text-gray-700">{label}</span>}
+
     </div>
+
+
   );
 };
 
@@ -183,8 +230,9 @@ const ReportPanelItem = ({ rightPanelOpen, noteId, docIds, fetchSources }: { rig
         await createStudyGuide(noteId, docIds)
       }
       else if (item === "Briefing Doc") {
-        await createBriefingDoc(noteId, docIds)
+        await createBriefingDoc(noteId, docIds, 'briefing-doc')
       }
+
 
       fetchSources()
 

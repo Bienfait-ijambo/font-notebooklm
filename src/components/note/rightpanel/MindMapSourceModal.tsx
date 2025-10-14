@@ -39,9 +39,9 @@ export const MindMapModel = () => {
         containerRef.current.innerHTML = "";
       }
     };
-  }, [rerenderKey]); // triggers re-init when rerenderKey changes
+  }, [rerenderKey]); 
 
-  // 🕒 Trigger re-render 3 seconds after modal opens
+
   useEffect(() => {
     if (mindMapModal.modal) {
       const timer = setTimeout(() => {

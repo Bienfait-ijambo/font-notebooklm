@@ -15,7 +15,8 @@ const sourceNoteResultState = {
     loading: false,
     error: null,
     sourceModal: { modal: false, title: "", content: "", source_type: "" },
-    mindMapModal: { modal: false, title: "", content: "", source_type: "" }
+    mindMapModal: { modal: false, title: "", content: "", source_type: "" },
+    audioCard:{show:false,title:"",content:"",source_type:""}
 };
 
 
@@ -42,18 +43,33 @@ closeMindMap: (state) => {
             state.sourceModal.content = ''
         },
 
+        closeAudioCard: (state) => {
+            state.audioCard.show = false
+            state.audioCard.title = ''
+            state.audioCard.content = ''
+        },
+
+
         showSourceModalContent: (state, action: PayloadAction<{ title: string, content: string, source_type: string }>) => {
+
             if (action.payload.source_type.includes('mindMap')) {
+                
                 state.mindMapModal.content = action.payload?.content
                 state.mindMapModal.modal = true
-            } else {
+            } 
+            else if(action.payload.source_type.includes('audio')){
+                 state.audioCard.show = true
+                state.audioCard.title = action.payload?.title
+                state.audioCard.content = action.payload?.content
+
+            }
+            
+            else {
                 state.sourceModal.modal = true
                 state.sourceModal.title = action.payload?.title
                 state.sourceModal.content = action.payload?.content
                 state.sourceModal.source_type = action.payload?.source_type
             }
-
-
 
 
         },
@@ -86,7 +102,7 @@ closeMindMap: (state) => {
     },
 })
 
-export const { addDocIds, showSourceModalContent, closeSourceModal,closeMindMap } = rightPanelSlice.actions
+export const { addDocIds, showSourceModalContent,closeAudioCard, closeSourceModal,closeMindMap } = rightPanelSlice.actions
 
 
 export default rightPanelSlice.reducer

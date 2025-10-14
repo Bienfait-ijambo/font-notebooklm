@@ -16,7 +16,7 @@ const MiddlePannel = () => {
                 width: `${middlePanelDefaultWidth}%`
             }}
             className={
-                `bg-white transition-all duration-300 shadow-md rounded-md h-full  p-4 flex flex-col`
+                `bg-white transition-all duration-300 shadow-sm rounded-md h-full  p-4 flex flex-col`
             }>
 
             {/* chat section */}

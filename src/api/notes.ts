@@ -249,10 +249,59 @@ export const generateStudyguide = async (userId: string, noteId: string, docIds:
 
 
 
+
+
+
+
+
+export const createBriefingDoc= async (noteId: string, docIds: string[],type:'audio'|'briefing-doc') => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `notes/briefingdoc`,
+            { userId, noteId, docIds,type })
+
+            //it means we already have summaries for all selected sources(docs)
+        if (data.status == 'ready_to_generate_source') {
+            await generateBriefingDoc(userId, noteId, docIds)
+        }
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
+
+
+export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[]) => {
+    try {
+        
+        const data = await makeHttpReq('POST', `notes/add/briefingdoc/sources`,
+            { userId, noteId, docIds })
+
+        showSuccess(data?.message)
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+
+
+export async function getSourceResults(noteId: string) {
+    const userData = getUserData()
+    const userId = userData?._id
+    const data = await makeHttpReq('GET', `notes/source/results?noteId=${noteId}&userId=${userId}`)
+    return data
+
+
+}
+
+
+
+
 // mindMap
-
-
-
 
 export const createMindMap= async (noteId: string, docIds: string[]) => {
     try {
@@ -291,47 +340,3 @@ export const generateMindMap = async (userId: string, noteId: string, docIds: st
 
 
 
-
-export const createBriefingDoc= async (noteId: string, docIds: string[]) => {
-    try {
-        const userData = getUserData()
-        const userId = userData?._id
-
-        const data = await makeHttpReq('POST', `notes/briefingdoc`,
-            { userId, noteId, docIds })
-
-            //it means we already have summaries for all selected sources(docs)
-        if (data.status == 'ready_to_generate_source') {
-            await generateBriefingDoc(userId, noteId, docIds)
-        }
-    } catch (error) {
-        console.log('error : ', error)
-    }
-
-};
-
-
-export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[]) => {
-    try {
-        
-        const data = await makeHttpReq('POST', `notes/add/briefingdoc/sources`,
-            { userId, noteId, docIds })
-
-        showSuccess(data?.message)
-    } catch (error) {
-        console.log('error : ', error)
-    }
-
-}
-
-
-
-
-export async function getSourceResults(noteId: string) {
-    const userData = getUserData()
-    const userId = userData?._id
-    const data = await makeHttpReq('GET', `notes/source/results?noteId=${noteId}&userId=${userId}`)
-    return data
-
-
-}

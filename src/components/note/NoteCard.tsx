@@ -41,7 +41,7 @@ const NoteCard = ({ notebooks ,viewNoteDetail}: NoteCardProps) => {
                             {truncateTitle(note.title)}
                         </h2>
                         <p className="text-xs text-gray-500 pt-2">
-                            {formatDate(note.createdAt)} •  sources
+                            {formatDate(note.createdAt)} • {note?.docs?.length } sources
                         </p>
                     </div>
                 </div>

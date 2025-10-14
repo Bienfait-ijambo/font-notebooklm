@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MoveLeft, Loader2,  } from "lucide-react";
+import { MoveLeft, Loader2, } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,10 @@ const editNoteSchema = z.object({
 type EditNoteFormValues = z.infer<typeof editNoteSchema>;
 interface EditNoteProps {
   note?: { _id: string; title: string };
-//   onSave: (data: EditNoteFormValues) => Promise<void>;
+  //   onSave: (data: EditNoteFormValues) => Promise<void>;
 }
 
-export const EditNote = ({ note }: EditNoteProps ) => {
+export const EditNote = ({ note }: EditNoteProps) => {
   const {
     register,
     handleSubmit,
@@ -30,13 +30,13 @@ export const EditNote = ({ note }: EditNoteProps ) => {
   } = useForm<EditNoteFormValues>({
     resolver: zodResolver(editNoteSchema),
     defaultValues: {
-      title:  "" ,
+      title: "",
     },
   });
 
 
 
-    // 🧠 When note data changes (e.g., from API), update the form value
+  // 🧠 When note data changes (e.g., from API), update the form value
   useEffect(() => {
     if (note?.title) {
       setValue("title", note.title)
@@ -48,30 +48,30 @@ export const EditNote = ({ note }: EditNoteProps ) => {
   const handleBlur = async () => {
     const data = getValues();
     if (!errors.title) {
-    //   await onSave(data);
-    await updateNote(note?._id as string,data?.title)
+      //   await onSave(data);
+      await updateNote(note?._id as string, data?.title)
     }
   };
 
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-2 w-full">
-         <Link
-            to="/notes"
-            className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
-          >
-            <MoveLeft size={18} />
-          </Link>
-{/* <span style={{ fontSize: "3rem", lineHeight: "1.2" }}>🧠✨</span> */}
+        <Link
+          to="/notes"
+          className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
+        >
+          <MoveLeft size={18} />
+        </Link>
+        {/* <span style={{ fontSize: "3rem", lineHeight: "1.2" }}>🧠✨</span> */}
         <div className="flex-1">
-         
+
           <Input
             id="title"
             {...register("title")}
             onBlur={handleBlur}
-            className="border-none font-semibold focus:ring-0 focus:border-0 outline-none bg-transparent"
+            className="border-none h-12 w-[400px] !text-lg focus:ring-0 focus:border-0 outline-none bg-transparent"
           />
-         
+
           {errors.title && (
             <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>
           )}

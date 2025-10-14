@@ -36,7 +36,7 @@ function ChatPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-1">
 
         <EditNote note={note}></EditNote>
         <div className='mr-4'>
@@ -46,7 +46,7 @@ function ChatPage() {
       </div>
 
 
-      <div className="flex h-screen gap-4">
+      <div className="flex h-screen gap-2">
 
 
         <LeftPanel loading={loading} note={note} />

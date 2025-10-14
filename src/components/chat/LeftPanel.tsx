@@ -58,7 +58,7 @@ const LeftPanel = ({ note, loading }: LeftPanelProps) => {
 
   return (
     <div
-      className={`bg-white shadow-md h-full transition-all duration-300 flex flex-col ${leftPanelOpen
+      className={`bg-white shadow-sm h-full transition-all duration-300 flex flex-col ${leftPanelOpen
         ? "w-[25%] p-4 rounded-md"
         : "w-16 p-2 rounded-r-2xl rounded-l-2xl"
         }`}
@@ -131,7 +131,7 @@ const LeftPanel = ({ note, loading }: LeftPanelProps) => {
                     className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
                   >
                     <FileText className="text-blue-500" size={20} />
-                    <span className="flex-1 text-sm truncate">{doc?.title}</span>
+                    <span className="flex-1 text-base text-gray-600 truncate">{doc?.title}</span>
                     <Checkbox
                       className="cursor-pointer"
                       checked={selectedDocs.includes(doc._id)}
