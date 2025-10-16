@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // ✅ Success toast
-export const showSuccess = (message: string) => {
+export const showSuccess = (message?: string) => {
   toast.success(message, {
     position: "top-right",
     autoClose: 3000,

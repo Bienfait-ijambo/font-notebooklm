@@ -22,11 +22,13 @@ import { SourceModal } from "../note/rightpanel/SourceModal";
 import MindMapSourceModal from "../note/rightpanel/MindMapSourceModal";
 import AudioSection from "./AudioSection";
 
-const RightPanel = ({ noteId }: { noteId: string }) => {
+const RightPanel = ({ noteId }: { noteId?: string }) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { rightPanelOpen } = useSelector((state: RootState) => state.chat);
-  const { docIds, sources, sourceModal } = useSelector((state: RootState) => state.rightPanel);
+  const { docIds, sources, sourceModal ,audioCard} = useSelector((state: RootState) => state.rightPanel);
+
+  
 
   function showSourceModal(source: any) {
     dispatch(showSourceModalContent(source))
@@ -117,7 +119,8 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
         <div
           className= {`${audioLoading ? 'animated-gradient-border':''}`}  
         >
-          <PanelItem  onClick={()=>generateAudio()} rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
+          
+          <PanelItem generateSource={()=>generateAudio()}   rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
 
         </div>
 
@@ -128,12 +131,12 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
       </div>
 
       {/* 🎧 Audio Section */}
-      {rightPanelOpen && (
+      {/* {rightPanelOpen && (
         <AudioSection
-          audioUrl="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-          title="Project Summary - Audio"
+          audioUrl={audioCard?.content}
+          title={audioCard?.title}
         />
-      )}
+      )} */}
 
 
 
@@ -142,7 +145,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
       {rightPanelOpen ? (
 
 
-        <div className="space-y-3 max-h-[220px] overflow-y-auto  pb-10">
+        <div className="space-y-3 max-h-[320px] overflow-y-auto  pb-10">
 
           {Array.isArray(sources) && sources.map((source) => (
             <div
@@ -172,7 +175,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
 
 
       {/* Bottom note button */}
-      <div className="mt-6 flex justify-center">
+      {/* <div className="mt-6 flex justify-center">
         <Button
           className={`flex items-center gap-2 rounded-full font-medium shadow-md ${rightPanelOpen ? "px-6 py-3" : "p-3"
             }`}
@@ -180,7 +183,7 @@ const RightPanel = ({ noteId }: { noteId: string }) => {
           <Pencil size={18} />
           {rightPanelOpen && <span>Add note</span>}
         </Button>
-      </div>
+      </div> */}
     </div>
 
   );

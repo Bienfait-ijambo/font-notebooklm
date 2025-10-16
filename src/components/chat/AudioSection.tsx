@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Music2, X, } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import { closeAudioCard } from "@/store/rightPanelSlice";
 
 interface AudioSectionProps {
   audioUrl: string; // URL of the audio file
@@ -9,6 +12,9 @@ interface AudioSectionProps {
 }
 
 const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
+
+
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [progress, setProgress] = useState(0);
@@ -60,8 +66,10 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
   };
 
   return (
+
     <div className="bg-slate-50 border rounded-md p-4 mt-6 shadow-sm animate-fadeIn">
        {/* Header with close button */}
+
   <div className="flex items-center justify-between mb-3">
     <div className="flex items-center gap-3">
       <Music2 className="text-blue-500" />
@@ -77,7 +85,7 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() =>''} // handle hide in parent
+      onClick={() =>dispatch(closeAudioCard())} // handle hide in parent
       className="p-1"
     >
       <X size={16} />

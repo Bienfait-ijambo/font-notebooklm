@@ -137,7 +137,7 @@ export const createSummary = async (noteId: string, docIds: string[]) => {
         const data = await makeHttpReq('POST', `notes/summary`,
             { userId, noteId, docIds })
 
-            //it means we already have summaries for all selected sources(docs)
+        //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
             await generateSummarySource(userId, noteId, docIds)
         }
@@ -150,7 +150,7 @@ export const createSummary = async (noteId: string, docIds: string[]) => {
 
 export const generateSummarySource = async (userId: string, noteId: string, docIds: string[]) => {
     try {
-        
+
         const data = await makeHttpReq('POST', `notes/add/sources`,
             { userId, noteId, docIds })
 
@@ -167,7 +167,7 @@ export const generateSummarySource = async (userId: string, noteId: string, docI
 // faq
 
 
-export const createFAQ= async (noteId: string, docIds: string[]) => {
+export const createFAQ = async (noteId: string, docIds: string[]) => {
     try {
         const userData = getUserData()
         const userId = userData?._id
@@ -175,7 +175,7 @@ export const createFAQ= async (noteId: string, docIds: string[]) => {
         const data = await makeHttpReq('POST', `notes/faq`,
             { userId, noteId, docIds })
 
-            //it means we already have summaries for all selected sources(docs)
+        //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
             await generateFAQSource(userId, noteId, docIds)
         }
@@ -188,7 +188,7 @@ export const createFAQ= async (noteId: string, docIds: string[]) => {
 
 export const generateFAQSource = async (userId: string, noteId: string, docIds: string[]) => {
     try {
-        
+
         const data = await makeHttpReq('POST', `notes/add/faq/sources`,
             { userId, noteId, docIds })
 
@@ -209,7 +209,7 @@ export const generateFAQSource = async (userId: string, noteId: string, docIds: 
 
 
 
-export const createStudyGuide= async (noteId: string, docIds: string[]) => {
+export const createStudyGuide = async (noteId: string, docIds: string[]) => {
     try {
         const userData = getUserData()
         const userId = userData?._id
@@ -217,7 +217,7 @@ export const createStudyGuide= async (noteId: string, docIds: string[]) => {
         const data = await makeHttpReq('POST', `notes/studyguide`,
             { userId, noteId, docIds })
 
-            //it means we already have summaries for all selected sources(docs)
+        //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
             await generateStudyguide(userId, noteId, docIds)
         }
@@ -230,7 +230,7 @@ export const createStudyGuide= async (noteId: string, docIds: string[]) => {
 
 export const generateStudyguide = async (userId: string, noteId: string, docIds: string[]) => {
     try {
-        
+
         const data = await makeHttpReq('POST', `notes/add/studyguide/sources`,
             { userId, noteId, docIds })
 
@@ -254,15 +254,15 @@ export const generateStudyguide = async (userId: string, noteId: string, docIds:
 
 
 
-export const createBriefingDoc= async (noteId: string, docIds: string[],type:'audio'|'briefing-doc') => {
+export const createBriefingDoc = async (noteId: string, docIds: string[], type: 'audio' | 'briefing-doc') => {
     try {
         const userData = getUserData()
         const userId = userData?._id
 
         const data = await makeHttpReq('POST', `notes/briefingdoc`,
-            { userId, noteId, docIds,type })
+            { userId, noteId, docIds, type })
 
-            //it means we already have summaries for all selected sources(docs)
+        //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
             await generateBriefingDoc(userId, noteId, docIds)
         }
@@ -275,7 +275,7 @@ export const createBriefingDoc= async (noteId: string, docIds: string[],type:'au
 
 export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[]) => {
     try {
-        
+
         const data = await makeHttpReq('POST', `notes/add/briefingdoc/sources`,
             { userId, noteId, docIds })
 
@@ -303,7 +303,7 @@ export async function getSourceResults(noteId: string) {
 
 // mindMap
 
-export const createMindMap= async (noteId: string, docIds: string[]) => {
+export const createMindMap = async (noteId?: string, docIds: string[]) => {
     try {
         const userData = getUserData()
         const userId = userData?._id
@@ -311,7 +311,7 @@ export const createMindMap= async (noteId: string, docIds: string[]) => {
         const data = await makeHttpReq('POST', `notes/mindmap`,
             { userId, noteId, docIds })
 
-            //it means we already have summaries for all selected sources(docs)
+        //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
             await generateMindMap(userId, noteId, docIds)
         }
@@ -324,7 +324,7 @@ export const createMindMap= async (noteId: string, docIds: string[]) => {
 
 export const generateMindMap = async (userId: string, noteId: string, docIds: string[]) => {
     try {
-        
+
         const data = await makeHttpReq('POST', `notes/add/mindmap/sources`,
             { userId, noteId, docIds })
 
@@ -337,6 +337,42 @@ export const generateMindMap = async (userId: string, noteId: string, docIds: st
 
 
 // end
+
+
+
+// chats
+
+
+export type messageType={ role: 'ai' | 'user', noteId: string, userId: string, content: string }
+export type chatHistoryType = { chatHistory: Array<messageType> }
+export const getNoteChats = async (userId: string, noteId: string) => {
+    try {
+
+        const data = await makeHttpReq('GET', `chats/history?userId=${userId}&noteId=${noteId}`) as chatHistoryType
+        return data
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+export const sendChatMessage = async ({userId,noteId,query}:{userId: string, noteId: string,query:string}) => {
+    try {
+
+        const data = await makeHttpReq('POST', `chats`,
+            { userId, noteId,query }) as {message:messageType}
+            return data
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
+
+
 
 
 
