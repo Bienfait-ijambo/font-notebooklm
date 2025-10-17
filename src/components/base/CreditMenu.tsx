@@ -1,3 +1,4 @@
+import { WalletIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -72,8 +73,11 @@ export const CreditMenu = () => {
             <p className="text-2xl font-semibold text-green-600">
               ${credits.toFixed(2)}
             </p>
-            <button className="mt-2 text-sm text-purple-600 hover:underline">
+            {/* <button className="mt-2 mr-3 font-bold text-sm text-blue-600 hover:underline">
               Buy Credits
+            </button> */}
+            <button className="flex   gap-2 mt-5 bg-gray-800  py-2 rounded-sm text-white  p-4 text-sm   hover:underline">
+            <WalletIcon size={18} />  Add Payment method
             </button>
           </div>
         </div>

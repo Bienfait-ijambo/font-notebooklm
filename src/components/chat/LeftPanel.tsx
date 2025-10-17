@@ -12,6 +12,7 @@ import {
   PanelLeft,
   Plus,
   Search,
+  
 } from "lucide-react";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
 import type { NoteType } from "@/types/note-types";

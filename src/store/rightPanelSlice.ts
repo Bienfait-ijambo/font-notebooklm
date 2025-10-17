@@ -16,7 +16,7 @@ const sourceNoteResultState = {
     error: null,
     sourceModal: { modal: false, title: "", content: "", source_type: "" },
     mindMapModal: { modal: false, title: "", content: "", source_type: "" },
-    audioCard: { show: false, title: "", content: "", source_type: "" }
+    audioCard: { show: false, title: "", content: "", source_type: "",sourceSectionHeight:320 }
 };
 
 
@@ -44,9 +44,11 @@ export const rightPanelSlice = createSlice({
         },
 
         closeAudioCard: (state) => {
+             state.audioCard.sourceSectionHeight+=120
             state.audioCard.show = false
             state.audioCard.title = ''
             state.audioCard.content = ''
+           
         },
 
 
@@ -58,9 +60,11 @@ export const rightPanelSlice = createSlice({
                 state.mindMapModal.modal = true
             }
             else if (action.payload.source_type.includes('audio')) {
+                 state.audioCard.sourceSectionHeight-=120
                 state.audioCard.show = true
                 state.audioCard.title = action.payload?.title
                 state.audioCard.content = action.payload?.content
+                
 
             }
 

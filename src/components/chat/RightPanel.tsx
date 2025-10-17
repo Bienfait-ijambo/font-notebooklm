@@ -21,6 +21,7 @@ import { truncateTitle } from "@/util/truncateTitle";
 import { SourceModal } from "../note/rightpanel/SourceModal";
 import MindMapSourceModal from "../note/rightpanel/MindMapSourceModal";
 import AudioSection from "./AudioSection";
+import { apiUrl } from "@/config/get-env";
 
 const RightPanel = ({ noteId }: { noteId?: string }) => {
 
@@ -130,24 +131,25 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
         <ReportPanelItem rightPanelOpen={rightPanelOpen} fetchSources={fetchSources} noteId={noteId} docIds={docIds} />
       </div>
 
-      {/* 🎧 Audio Section */}
-      {/* {rightPanelOpen && (
+      
+      {rightPanelOpen && (
         <AudioSection
-          audioUrl={audioCard?.content}
+           audioUrl={`${apiUrl}/api/v1/notes/read/audios/${audioCard?.content}`}
           title={audioCard?.title}
         />
-      )} */}
-
+      )}
+    
 
 
       <br />
-
+       
       {rightPanelOpen ? (
 
-
-        <div className="space-y-3 max-h-[320px] overflow-y-auto  pb-10">
+      
+        <div className={`space-y-3 max-h-[${audioCard.sourceSectionHeight}px] overflow-y-auto  pb-10`}>
 
           {Array.isArray(sources) && sources.map((source) => (
+            
             <div
               key={source._id}
               onClick={() => showSourceModal(source)}

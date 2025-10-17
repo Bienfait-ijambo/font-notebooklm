@@ -6,7 +6,7 @@ import CreateNoteModal from '@/components/note/createNoteModal/CreateNoteModal'
 import { Link, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '@/store'
-import { fetchSingleNote } from '@/store/chatSlice'
+import { fetchDocOverviewAndQuestions, fetchSingleNote } from '@/store/chatSlice'
 import { MoveLeft } from 'lucide-react'
 import UserAvatar from '@/components/base/UserAvatar'
 import DiscoveryModal from '@/components/note/DiscoveryModal'
@@ -22,7 +22,7 @@ function ChatPage() {
 
 
   const dispatch = useDispatch<AppDispatch>();
-  const { note,loading } = useSelector((state: RootState) => state.chat);
+  const { note,loading,aiResult } = useSelector((state: RootState) => state.chat);
 
   const {chatHistory } = useSelector((state: RootState) => state.chatHistory);
   const userData=getUserData()
@@ -39,6 +39,7 @@ function ChatPage() {
 
       dispatch(fetchChats({userId:userData?._id as string,noteId:id}))
 
+      dispatch(fetchDocOverviewAndQuestions(id))
 
 
     }
@@ -48,12 +49,12 @@ function ChatPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between ">
 
         <EditNote note={note}></EditNote>
-        <div className='flex gap-2 mr-4'>
+        <div className='flex gap-4 mr-4'>
           {/* header actions here */}
-          {/* <CreditMenu /> */}
+          <CreditMenu />
           <UserAvatar />
         </div>
       </div>
@@ -63,7 +64,7 @@ function ChatPage() {
 
 
         <LeftPanel loading={loading} note={note} />
-        <MiddlePanel chatHistory={chatHistory} note={note} userId={userData?._id}></MiddlePanel>
+        <MiddlePanel aiResult={aiResult} chatHistory={chatHistory} note={note} userId={userData?._id}></MiddlePanel>
         <RightPanel noteId={id}/>
 
         <CreateNoteModal noteId={id} ></CreateNoteModal>

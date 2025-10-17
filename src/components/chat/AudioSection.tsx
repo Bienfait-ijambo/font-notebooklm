@@ -1,19 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Music2, X, } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Music2,
+  X,
+} from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store";
 import { closeAudioCard } from "@/store/rightPanelSlice";
+import { truncateTitle } from "@/util/truncateTitle";
 
 interface AudioSectionProps {
-  audioUrl: string; // URL of the audio file
+  audioUrl: string;
   title?: string;
 }
 
 const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
-
-
+  const dispatch = useDispatch<AppDispatch>();
+  const { audioCard } = useSelector((state: RootState) => state.rightPanel);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
@@ -22,77 +30,120 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Handle play/pause toggle
+  // 🔁 Play / Pause toggle
   const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // Update progress
-  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const updateProgress = () => setProgress(audio.currentTime);
-    const setAudioDuration = () => setDuration(audio.duration);
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("loadedmetadata", setAudioDuration);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("loadedmetadata", setAudioDuration);
-    };
-  }, []);
-
-  // Seek through the track
-  const handleSeek = (value: number[]) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = value[0];
-      setProgress(value[0]);
+    if (audio.paused) {
+      audio
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.warn("Play failed:", err));
+    } else {
+      audio.pause();
+      setIsPlaying(false);
     }
   };
 
-  // Volume control
-  const handleVolume = (value: number[]) => {
-    const vol = value[0];
-    setVolume(vol);
-    if (audioRef.current) audioRef.current.volume = vol;
+useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio) return;
+
+
+    // Pause any playing audio
+  audio.pause();
+  audio.currentTime = 0;
+  setProgress(0);
+  setDuration(0);
+  setIsPlaying(false);
+
+  // Reload the new source
+  audio.load();
+
+
+  const handleTimeUpdate = () => {
+    setProgress(audio.currentTime);
   };
 
+  const handleLoadedMetadata = () => {
+    setDuration(audio.duration || 0);
+  };
+
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+
+  // set volume once
+  audio.volume = volume;
+
+  audio.addEventListener("timeupdate", handleTimeUpdate);
+  audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+  audio.addEventListener("ended", handleEnded);
+
+  // cleanup
+  return () => {
+    audio.removeEventListener("timeupdate", handleTimeUpdate);
+    audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.removeEventListener("ended", handleEnded);
+  };
+}, [audioUrl, title]); // 👈 empty deps so it attaches once
+useEffect(() => {
+  const interval = setInterval(() => {
+    if (audioRef.current) setProgress(audioRef.current.currentTime);
+  }, 500);
+  return () => clearInterval(interval);
+}, []);
+
+
+  // ⏩ Seek manually
+  const handleSeek = (value: number[]) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const newTime = value[0];
+    audio.currentTime = newTime;
+    setProgress(newTime);
+  };
+
+  // 🔊 Volume control
+  const toggleMute = () => {
+    const newVol = volume > 0 ? 0 : 0.8;
+    setVolume(newVol);
+    if (audioRef.current) audioRef.current.volume = newVol;
+  };
+
+  if (!audioCard?.show) return null;
+
   return (
-
     <div className="bg-slate-50 border rounded-md p-4 mt-6 shadow-sm animate-fadeIn">
-       {/* Header with close button */}
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <Music2 className="text-blue-500" />
+          <div className="flex flex-col">
+            <span className="font-semibold text-gray-800 text-sm">
+              {truncateTitle(title, 30) || "Now Playing"}
+            </span>
+            <span className="text-xs text-gray-500">Audio Overview</span>
+          </div>
+        </div>
 
-  <div className="flex items-center justify-between mb-3">
-    <div className="flex items-center gap-3">
-      <Music2 className="text-blue-500" />
-      <div className="flex flex-col">
-        <span className="font-semibold text-gray-800 text-sm">
-          {title || "Now Playing"}
-        </span>
-        <span className="text-xs text-gray-500">Audio Overview</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => dispatch(closeAudioCard())}
+          className="p-1"
+        >
+          <X size={16} />
+        </Button>
       </div>
-    </div>
 
-    {/* Close button */}
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() =>dispatch(closeAudioCard())} // handle hide in parent
-      className="p-1"
-    >
-      <X size={16} />
-    </Button>
-  </div>
-      <audio ref={audioRef} src={audioUrl} preload="metadata" />
+      {/* Audio Element */}
+      <audio ref={audioRef} src={audioUrl} preload="auto" />
 
+
+      {/* Controls */}
       <div className="flex items-center gap-3">
         <Button
           variant="outline"
@@ -112,15 +163,12 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
           />
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setVolume(volume > 0 ? 0 : 0.8)}
-        >
+        <Button variant="ghost" size="icon" onClick={toggleMute}>
           {volume > 0 ? <Volume2 /> : <VolumeX />}
         </Button>
       </div>
 
+      {/* Time Info */}
       <div className="flex justify-between text-xs text-gray-500 mt-1">
         <span>{formatTime(progress)}</span>
         <span>{formatTime(duration)}</span>
@@ -129,6 +177,7 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
   );
 };
 
+// 🕒 Format seconds into mm:ss
 function formatTime(time: number) {
   if (isNaN(time)) return "0:00";
   const minutes = Math.floor(time / 60);

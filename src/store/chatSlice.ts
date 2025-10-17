@@ -1,4 +1,4 @@
-import { getNoteChats, getSingleNote, type chatHistoryType } from '@/api/notes';
+import { getNoteChats, getQuestionsAndDocOverview, getSingleNote, type chatHistoryType, type questionAndDocOverviewType } from '@/api/notes';
 import type { NoteType } from '@/types/note-types';
 import { createSlice, configureStore, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 
@@ -10,10 +10,24 @@ export const fetchSingleNote = createAsyncThunk(
 
 
 
+export const fetchDocOverviewAndQuestions = createAsyncThunk(
+  "doc/overview",
+  async (noteId: string) => getQuestionsAndDocOverview(noteId)
+);
+
+
+
+
 const singleNoteState = {
   note: {} as NoteType,
   loading: false,
   error: null,
+};
+
+
+const  docOverviewAndQuestionsState= {
+  aiResult: {} as questionAndDocOverviewType,
+  
 };
 
 
@@ -24,6 +38,7 @@ const chatSlice = createSlice({
     rightPanelOpen: true,
     middlePanelDefaultWidth: 50,
     ...singleNoteState,
+    ...docOverviewAndQuestionsState
   },
   reducers: {
     addExtraWidth: state => {
@@ -61,6 +76,25 @@ const chatSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "Failed to fetch notes";
       })
+
+
+
+      // doc overview and questions
+
+        builder
+      .addCase(fetchDocOverviewAndQuestions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDocOverviewAndQuestions.fulfilled, (state, action: PayloadAction<questionAndDocOverviewType >) => {
+        state.aiResult = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchDocOverviewAndQuestions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch notes";
+      })
+
 
   },
 })

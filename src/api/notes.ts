@@ -264,7 +264,7 @@ export const createBriefingDoc = async (noteId: string, docIds: string[], type: 
 
         //it means we already have summaries for all selected sources(docs)
         if (data.status == 'ready_to_generate_source') {
-            await generateBriefingDoc(userId, noteId, docIds)
+            await generateBriefingDoc(userId, noteId, docIds,type)
         }
     } catch (error) {
         console.log('error : ', error)
@@ -273,11 +273,11 @@ export const createBriefingDoc = async (noteId: string, docIds: string[], type: 
 };
 
 
-export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[]) => {
+export const generateBriefingDoc = async (userId: string, noteId: string, docIds: string[],type: 'audio' | 'briefing-doc') => {
     try {
 
         const data = await makeHttpReq('POST', `notes/add/briefingdoc/sources`,
-            { userId, noteId, docIds })
+            { userId, noteId, docIds,type })
 
         showSuccess(data?.message)
     } catch (error) {
@@ -369,6 +369,22 @@ export const sendChatMessage = async ({userId,noteId,query}:{userId: string, not
     }
 
 }
+
+export type questionAndDocOverviewType= {aiResult:{questions:string[],doc_overview:string}}
+
+export const getQuestionsAndDocOverview = async (noteId:string) => {
+    try {
+
+        const data = await makeHttpReq('GET', `notes/docs/overview?noteId=${noteId}`) as questionAndDocOverviewType
+        console.log(' :  ',data)
+            return data
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+}
+
+
 
 
 
