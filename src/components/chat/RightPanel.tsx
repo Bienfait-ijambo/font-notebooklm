@@ -146,7 +146,7 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
       {rightPanelOpen ? (
 
       
-        <div className={`space-y-3 max-h-[${audioCard.sourceSectionHeight}px] overflow-y-auto  pb-10`}>
+        <div className={`space-y-3 ${audioCard.show ? 'max-h-60':'max-h-100'}  overflow-y-auto  pb-10`}>
 
           {Array.isArray(sources) && sources.map((source) => (
             

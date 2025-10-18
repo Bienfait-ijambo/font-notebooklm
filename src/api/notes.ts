@@ -2,7 +2,7 @@ import { apiUrl } from "@/config/get-env";
 import { getUserData } from "@/helper/getUserData";
 import { makeHttpReq } from "@/helper/makeHttpReq";
 import type { NoteServerData, NoteType } from "@/types/note-types";
-import { showSuccess } from "@/util/toast-notification";
+import { showError, showSuccess } from "@/util/toast-notification";
 
 
 export async function getNotes(page = 1, search: string = ''): Promise<NoteServerData> {
@@ -105,7 +105,7 @@ export const searchWeb = async (query: string) => {
         const data = await makeHttpReq('GET', `notes/search/web?query=${query}`)
         return data
     } catch (error) {
-        console.log('error : ', error)
+        showError(error?.error?.message)
     }
 
 };

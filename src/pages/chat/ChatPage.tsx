@@ -15,6 +15,7 @@ import { fetchNoteSourceResult } from '@/store/rightPanelSlice'
 import { CreditMenu } from '@/components/base/CreditMenu'
 import { fetchChats } from '@/store/chatHistorySlice'
 import { getUserData } from '@/helper/getUserData'
+import BuyCreditModal from '@/components/payment/BuyCreditModal'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -39,7 +40,7 @@ function ChatPage() {
 
       dispatch(fetchChats({userId:userData?._id as string,noteId:id}))
 
-      dispatch(fetchDocOverviewAndQuestions(id))
+      // dispatch(fetchDocOverviewAndQuestions(id))
 
 
     }
@@ -56,6 +57,7 @@ function ChatPage() {
           {/* header actions here */}
           <CreditMenu />
           <UserAvatar />
+          <BuyCreditModal />
         </div>
       </div>
 

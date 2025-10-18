@@ -46,55 +46,55 @@ const AudioSection = ({ audioUrl, title }: AudioSectionProps) => {
     }
   };
 
-useEffect(() => {
-  const audio = audioRef.current;
-  if (!audio) return;
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
 
     // Pause any playing audio
-  audio.pause();
-  audio.currentTime = 0;
-  setProgress(0);
-  setDuration(0);
-  setIsPlaying(false);
-
-  // Reload the new source
-  audio.load();
-
-
-  const handleTimeUpdate = () => {
-    setProgress(audio.currentTime);
-  };
-
-  const handleLoadedMetadata = () => {
-    setDuration(audio.duration || 0);
-  };
-
-  const handleEnded = () => {
-    setIsPlaying(false);
+    audio.pause();
+    audio.currentTime = 0;
     setProgress(0);
-  };
+    setDuration(0);
+    setIsPlaying(false);
 
-  // set volume once
-  audio.volume = volume;
+    // Reload the new source
+    audio.load();
 
-  audio.addEventListener("timeupdate", handleTimeUpdate);
-  audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-  audio.addEventListener("ended", handleEnded);
 
-  // cleanup
-  return () => {
-    audio.removeEventListener("timeupdate", handleTimeUpdate);
-    audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.removeEventListener("ended", handleEnded);
-  };
-}, [audioUrl, title]); // 👈 empty deps so it attaches once
-useEffect(() => {
-  const interval = setInterval(() => {
-    if (audioRef.current) setProgress(audioRef.current.currentTime);
-  }, 500);
-  return () => clearInterval(interval);
-}, []);
+    const handleTimeUpdate = () => {
+      setProgress(audio.currentTime);
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setProgress(0);
+    };
+
+    // set volume once
+    audio.volume = volume;
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("ended", handleEnded);
+
+    // cleanup
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [audioUrl, title]); // 👈 empty deps so it attaches once
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (audioRef.current) setProgress(audioRef.current.currentTime);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
 
 
   // ⏩ Seek manually

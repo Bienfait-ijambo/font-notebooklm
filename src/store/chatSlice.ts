@@ -38,9 +38,20 @@ const chatSlice = createSlice({
     rightPanelOpen: true,
     middlePanelDefaultWidth: 50,
     ...singleNoteState,
-    ...docOverviewAndQuestionsState
+    ...docOverviewAndQuestionsState,
+
+    payment:{
+      modal:false
+    }
   },
   reducers: {
+
+    
+    togglePaymentModal: state => {
+
+      state.payment.modal = !state.payment.modal
+    },
+
     addExtraWidth: state => {
 
       state.middlePanelDefaultWidth += 21
@@ -99,7 +110,7 @@ const chatSlice = createSlice({
   },
 })
 
-export const { addExtraWidth, toggleLeftPanel, toggleRightPanel, reduceExtraWidth } = chatSlice.actions
+export const { addExtraWidth, toggleLeftPanel, toggleRightPanel, reduceExtraWidth,togglePaymentModal } = chatSlice.actions
 
 
 
