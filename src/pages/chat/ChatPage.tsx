@@ -16,6 +16,7 @@ import { CreditMenu } from '@/components/base/CreditMenu'
 import { fetchChats } from '@/store/chatHistorySlice'
 import { getUserData } from '@/helper/getUserData'
 import BuyCreditModal from '@/components/payment/BuyCreditModal'
+import { fetchUserCreditAndPayment } from '@/store/creditMenuSlice'
 
 function ChatPage() {
   const [count, setCount] = useState(0)
@@ -26,6 +27,9 @@ function ChatPage() {
   const { note,loading,aiResult } = useSelector((state: RootState) => state.chat);
 
   const {chatHistory } = useSelector((state: RootState) => state.chatHistory);
+
+  const {result } = useSelector((state: RootState) => state.creditMenu);
+
   const userData=getUserData()
 
 
@@ -40,7 +44,10 @@ function ChatPage() {
 
       dispatch(fetchChats({userId:userData?._id as string,noteId:id}))
 
-      // dispatch(fetchDocOverviewAndQuestions(id))
+      dispatch(fetchDocOverviewAndQuestions(id))
+
+      dispatch(fetchUserCreditAndPayment(userData?._id))
+
 
 
     }
@@ -55,15 +62,16 @@ function ChatPage() {
         <EditNote note={note}></EditNote>
         <div className='flex gap-4 mr-4'>
           {/* header actions here */}
-          <CreditMenu />
+         
+          <CreditMenu result={result} />
           <UserAvatar />
           <BuyCreditModal />
         </div>
       </div>
 
 
-      <div className="flex h-screen gap-2">
 
+      <div className="flex h-screen gap-2">
 
         <LeftPanel loading={loading} note={note} />
         <MiddlePanel aiResult={aiResult} chatHistory={chatHistory} note={note} userId={userData?._id}></MiddlePanel>

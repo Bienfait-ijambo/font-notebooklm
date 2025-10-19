@@ -99,10 +99,10 @@ export const sendYoutubeLink = async (youtubeLink: string, noteId?: string) => {
 };
 
 
-export const searchWeb = async (query: string) => {
+export const searchWeb = async (query: string,userId:string) => {
     try {
 
-        const data = await makeHttpReq('GET', `notes/search/web?query=${query}`)
+        const data = await makeHttpReq('GET', `notes/search/web?query=${query}&userId=${userId}`)
         return data
     } catch (error) {
         showError(error?.error?.message)

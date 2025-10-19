@@ -49,7 +49,7 @@ export const DiscoveryModal = ({ noteId }: { noteId?: string }) => {
 
   const onSubmit = async (data: FormType) => {
 
-    const serverData = await searchWeb(data?.query)
+    const serverData = await searchWeb(data?.query,userData?._id)
 
     if (serverData) {
       setSearchResult(serverData?.data)

@@ -7,16 +7,15 @@ import { getUserData } from "@/helper/getUserData";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store";
 import { togglePaymentModal } from "@/store/chatSlice";
+import type { CreditMenuStateType } from "@/store/creditMenuSlice";
 
-export const CreditMenu = () => {
+export const CreditMenu = ({result}:{result:CreditMenuStateType}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
    const dispatch = useDispatch<AppDispatch>();
     const { payment} = useSelector((state: RootState) => state.chat);
 
 
-  // Example values (could come from props or API)
-  const totalSpend = 1.25;
 
   const [loading, setLoading] = useState(false);
 
@@ -45,7 +44,7 @@ export const CreditMenu = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [result]);
 
   return (
     <div className="relative" ref={menuRef}>
@@ -54,7 +53,7 @@ export const CreditMenu = () => {
         onClick={() => setMenuOpen(!menuOpen)}
         className="px-3 py-1 rounded-md border border-gray-300 bg-white shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
       >
-        Total Credit : <span className="font-semibold">{totalSpend}</span>
+        Total Credit : <span className="font-semibold">{result?.credits?.toFixed(1)}</span>
       </button>
 
       {menuOpen && (
@@ -70,7 +69,7 @@ export const CreditMenu = () => {
               {/* Spend text */}
               <div className="ml-1">
                 <p className="text-xl font-semibold text-gray-800">
-                  {totalSpend.toFixed(2)}
+                  {result?.credits?.toFixed(1)}
                 </p>
 
               </div>
@@ -81,11 +80,14 @@ export const CreditMenu = () => {
           {/* Prepaid Credits */}
           <div className="p-4">
            
-            
-            <button onClick={()=>dispatch(togglePaymentModal())} className="mt-2 mr-3 font-bold text-sm text-blue-600 hover:underline">
+           {
+            result?.paymentType ?
+            (
+               <button onClick={()=>dispatch(togglePaymentModal())} className="mt-2 mr-3 font-bold text-sm text-blue-600 hover:underline">
               Buy Credits
             </button>
-            <Button disabled={loading} onClick={addPayment} className="flex cursor-pointer   gap-2 mt-5 bg-gray-800  py-2 rounded-sm text-white  p-4 text-sm  ">
+            ):
+            (  <Button disabled={loading} onClick={addPayment} className="flex cursor-pointer   gap-2 mt-5 bg-gray-800  py-2 rounded-sm text-white  p-4 text-sm  ">
 
               {loading ? (
                 <>
@@ -98,7 +100,11 @@ export const CreditMenu = () => {
                 </>
 
               )}
-            </Button>
+            </Button>)
+           }
+            
+           
+          
           </div>
         </div>
       )}

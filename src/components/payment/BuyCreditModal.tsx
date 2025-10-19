@@ -14,6 +14,7 @@ import { togglePaymentModal } from "@/store/chatSlice";
 import { buyCredit } from "@/api/payment";
 import { getUserData } from "@/helper/getUserData";
 import { showError, showSuccess } from "@/util/toast-notification";
+import { fetchUserCreditAndPayment } from "@/store/creditMenuSlice";
 
 
 export const BuyCreditModal = () => {
@@ -33,6 +34,9 @@ export const BuyCreditModal = () => {
       });
       showSuccess(res?.message);
       dispatch(togglePaymentModal());
+        dispatch(fetchUserCreditAndPayment(userData?._id))
+      
+      
       setLoading(false)
 
     } catch (err) {

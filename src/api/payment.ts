@@ -27,3 +27,15 @@ export async function buyCredit({ userId, email, amount }: { userId: string, ema
 
     }
 }
+
+
+export const getUserCreditAndPaymentMethod = async (userId: string) => {
+    try {
+
+        const data = await makeHttpReq('GET', `user-credits?userId=${userId}`)
+        return data
+    } catch (error) {
+        showError(error?.error?.message)
+    }
+
+};
