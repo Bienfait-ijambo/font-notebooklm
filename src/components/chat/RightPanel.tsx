@@ -1,5 +1,5 @@
 
-import { PanelRight, Sparkles, Video, GitBranch, FileText, Star, HelpCircle, Pencil, NotepadText, AwardIcon } from "lucide-react";
+import { PanelRight, Sparkles, Video, GitBranch, FileText, Star, HelpCircle, Pencil, NotepadText, AwardIcon, Music2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { addExtraWidth, reduceExtraWidth, toggleRightPanel } from "@/store/chatSlice";
@@ -27,9 +27,9 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { rightPanelOpen } = useSelector((state: RootState) => state.chat);
-  const { docIds, sources, sourceModal ,audioCard} = useSelector((state: RootState) => state.rightPanel);
+  const { docIds, sources, sourceModal, audioCard } = useSelector((state: RootState) => state.rightPanel);
 
-  
+
 
   function showSourceModal(source: any) {
     dispatch(showSourceModalContent(source))
@@ -118,10 +118,10 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
       {/* Content */}
       <div className={`mt-4 grid ${rightPanelOpen ? "grid-cols-2 gap-4" : "grid-cols-1 gap-3"}`}>
         <div
-          className= {`${audioLoading ? 'animated-gradient-border':''}`}  
+          className={`${audioLoading ? 'animated-gradient-border' : ''}`}
         >
-          
-          <PanelItem generateSource={()=>generateAudio()}   rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
+
+          <PanelItem generateSource={() => generateAudio()} rightPanelOpen={rightPanelOpen} icon={<Sparkles />} label="Audio Overview" />
 
         </div>
 
@@ -131,38 +131,52 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
         <ReportPanelItem rightPanelOpen={rightPanelOpen} fetchSources={fetchSources} noteId={noteId} docIds={docIds} />
       </div>
 
-      
+
       {rightPanelOpen && (
         <AudioSection
-           audioUrl={`${apiUrl}/api/v1/notes/read/audios/${audioCard?.content}`}
+          audioUrl={`${apiUrl}/api/v1/notes/read/audios/${audioCard?.content}`}
           title={audioCard?.title}
         />
       )}
-    
+
 
 
       <br />
-       
+
       {rightPanelOpen ? (
 
-      
-        <div className={`space-y-3 ${audioCard.show ? 'max-h-60':'max-h-100'}  overflow-y-auto  pb-10`}>
+
+        sources?.length > 0 ? (<div className={`space-y-3 ${audioCard.show ? 'max-h-60' : 'max-h-100'}  overflow-y-auto  pb-10`}>
 
           {Array.isArray(sources) && sources.map((source) => (
-            
+
             <div
               key={source._id}
               onClick={() => showSourceModal(source)}
               className="flex cursor-pointer items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
             >
-              <FileText className="text-blue-500" size={20} />
+              {/* <FileText className="text-blue-500" size={20} /> */}
+
+              <SourceIcon type={source?.source_type} />
+
               <div className="flex flex-col">
                 <span className="flex-1 text-base truncate"> {truncateTitle(source?.title, 35) || 'No title'}  </span>
                 <span className="text-xs">{source?.source_type} - {source?.total_source}  sources</span>
               </div>
             </div>
           ))}
-        </div>
+        </div>) : (
+          <div className="flex flex-col items-center mt-10 justify-center  text-center">
+            <FileText className="text-gray-500 mx-auto" size={60} />
+            <p className="text-sm text-gray-400 font-semibold mt-4 px-3">
+              No sources, available
+            </p>
+          </div>
+
+        )
+
+
+
 
       ) : (
         <div className="flex flex-col items-center mt-6  pl-1  gap-4">
@@ -289,5 +303,25 @@ const ReportPanelItem = ({ rightPanelOpen, noteId, docIds, fetchSources }: { rig
 
 
 
+
+interface SourceIconProps {
+  type?: string;
+}
+
+ function SourceIcon({ type = "" }: SourceIconProps) {
+  const normalized = type.toLowerCase();
+
+  if (normalized.includes("audio")) {
+    return <Music2 className="text-green-500" />;
+  }
+
+  if (normalized.includes("mindmap")) {
+    return <GitBranch className="text-orange-500" size={20} />;
+  }
+
+
+
+  return <FileText className="text-blue-500" size={20} />;
+}
 
 export default RightPanel;

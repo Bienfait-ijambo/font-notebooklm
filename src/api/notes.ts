@@ -5,6 +5,9 @@ import type { NoteServerData, NoteType } from "@/types/note-types";
 import { showError, showSuccess } from "@/util/toast-notification";
 
 
+
+
+
 export async function getNotes(page = 1, search: string = ''): Promise<NoteServerData> {
 
     const data = await makeHttpReq('GET', `notes?page=${page}&search=${search}`) as NoteServerData
@@ -386,6 +389,20 @@ export const getQuestionsAndDocOverview = async (noteId:string) => {
 
 
 
+export const createBlankNote = async () => {
+    try {
+        const userData = getUserData()
+        const userId = userData?._id
+
+        const data = await makeHttpReq('POST', `blank/notes`,
+            { userId }) as{newNote: {_id:string,title:string}}
+       return data
+
+    } catch (error) {
+        console.log('error : ', error)
+    }
+
+};
 
 
 

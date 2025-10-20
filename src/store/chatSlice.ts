@@ -46,6 +46,10 @@ const chatSlice = createSlice({
   },
   reducers: {
 
+      attribNoteVal: (state ,action)=> {
+
+            state.note=action.payload
+        },
     
     togglePaymentModal: state => {
 
@@ -110,7 +114,7 @@ const chatSlice = createSlice({
   },
 })
 
-export const { addExtraWidth, toggleLeftPanel, toggleRightPanel, reduceExtraWidth,togglePaymentModal } = chatSlice.actions
+export const { addExtraWidth,attribNoteVal, toggleLeftPanel, toggleRightPanel, reduceExtraWidth,togglePaymentModal } = chatSlice.actions
 
 
 

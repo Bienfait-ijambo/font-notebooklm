@@ -4,7 +4,7 @@ import EditNoteModal from '@/components/note/EditNoteModal';
 import NoteCard from '@/components/note/NoteCard';
 import type { AppDispatch, RootState } from '@/store';
 import { fetchNotes } from '@/store/noteSlice';
-import { Plus } from 'lucide-react'
+import { Loader2, Plus } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 // shadcn pagination
@@ -20,6 +20,8 @@ import { Input } from '@/components/ui/input';
 import { debounce } from 'lodash'
 import { toggleAddSourceNoteModal } from '@/store/addSourceSlice';
 import { useNavigate } from 'react-router';
+import { createBlankNote } from '@/api/notes';
+import { attribNoteVal } from '@/store/chatSlice';
 
 function NotePage() {
     // const [count, setCount] = useState(0)
@@ -31,6 +33,9 @@ function NotePage() {
     const [search, setSearch] = useState('')
     const totalPages = pagination?.totalPages ?? 1;
     const navigate = useNavigate()
+
+
+    const [createNoteLoading, setCreateNoteLoading] = useState(false);
 
 
 
@@ -56,10 +61,20 @@ function NotePage() {
 
 
 
-    const showAddNoteSourceModal = () => {
+    const showAddNoteSourceModal = async () => {
 
-        dispatch(toggleAddSourceNoteModal())
-        navigate('/chats')
+        try {
+            setCreateNoteLoading(true)
+            const data = await createBlankNote()
+            dispatch(toggleAddSourceNoteModal())
+            dispatch(attribNoteVal(data?.newNote))
+
+            navigate('/chats/' + data?.newNote?._id)
+            setCreateNoteLoading(false)
+        } catch (error) {
+            setCreateNoteLoading(false)
+
+        }
 
     }
 
@@ -75,7 +90,7 @@ function NotePage() {
     return (
         <>
 
-            <main className="min-h-screen bg-gray-50 p-6">
+            <main className="min-h-screen bg-white p-6">
 
 
 
@@ -95,8 +110,23 @@ function NotePage() {
                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                     {/* Create new notebook card */}
                     <div onClick={() => showAddNoteSourceModal()} className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl h-40 cursor-pointer hover:bg-gray-100 transition">
-                        <div className="flex flex-col items-center">
-                            <Plus className="w-8 h-8 text-blue-600 mb-2" />
+                        <div className="flex flex-col items-center ">
+
+                            {
+                                createNoteLoading ? (<>
+                                    <Loader2  className="mr-2 h-4 w-4 animate-spin" />
+                                </>) :
+                                    (
+                                        <>
+                                            <span className='w-8 h-8 bg-blue-100 rounded-full'>
+
+                                                <Plus className="w-8 h-8  rounded-full text-blue-600 mb-2" />
+                                            </span>
+                                        </>
+                                    )
+                            }
+
+
                             <span className="text-gray-600 font-medium">
                                 Create new notebook
                             </span>

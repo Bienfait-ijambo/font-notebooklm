@@ -23,7 +23,7 @@ export default function NoteLayout() {
       </header>
 
       {/* Page Content */}
-      <main className="flex-1 p-6 bg-gray-50">
+      <main className="flex-1 p-6 ">
         <Outlet />
       </main>
     </div>

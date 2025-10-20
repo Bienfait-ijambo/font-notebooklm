@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BaseModal } from "../../base/BaseModal"
 import { Button } from "../../ui/button"
-import { ClipboardMinus, HardDrive, Link2, MoveLeft, Newspaper, Search, Youtube } from "lucide-react";
+import { ClipboardMinus, HardDrive, Link2, Loader2, MoveLeft, Newspaper, Search, Youtube } from "lucide-react";
 import type { AppDispatch, RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
@@ -16,6 +16,7 @@ import { AddPasteTextForm } from "./AddPasteTextForm";
 import AddWebLinkForm from "./AddWebLinkForm";
 import AddYoutubeLinkForm from "./AddYoutubeForm";
 import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
+import { showInfo } from "@/util/toast-notification";
 
 
 
@@ -201,6 +202,8 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
 const UploadFileSection = ({ noteId }: { noteId?: string }) => {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState(false);
+
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -222,6 +225,7 @@ const UploadFileSection = ({ noteId }: { noteId?: string }) => {
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (loading) return; // prevent new uploads
         const files = e.target.files;
         if (files && files.length > 0) {
             uploadFiles(files);
@@ -229,6 +233,7 @@ const UploadFileSection = ({ noteId }: { noteId?: string }) => {
     };
 
     const uploadFiles = async (files: FileList) => {
+        setLoading(true);
         const formData = new FormData();
         const userData = getUserData()
         const userId = userData?._id
@@ -251,7 +256,11 @@ const UploadFileSection = ({ noteId }: { noteId?: string }) => {
 
             const data = await response.json();
             console.log("Upload successful:", data);
+            showInfo('File uploaded successfully')
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
+
             console.error("Error uploading files:", error);
         }
     };
@@ -265,6 +274,10 @@ const UploadFileSection = ({ noteId }: { noteId?: string }) => {
     };
 
     return (
+
+
+
+
         <div
             className={`mb-8 mt-6 rounded-lg p-8 flex flex-col items-center justify-center text-center 
       ${isDragging ? "border-solid border-2 border-indigo-500 bg-indigo-50" : "border-2 border-dashed border-gray-300"}`}
@@ -274,6 +287,15 @@ const UploadFileSection = ({ noteId }: { noteId?: string }) => {
             onClick={handleClick}
             style={{ cursor: "pointer" }}
         >
+
+
+            {loading && (
+                <div className="mb-4 flex items-center space-x-2 text-indigo-500">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Uploading...</span>
+                </div>
+            )}
+
             <div className="bg-indigo-50 rounded-full p-4 mb-3">
                 <svg
                     className="w-8 h-8 text-indigo-500"

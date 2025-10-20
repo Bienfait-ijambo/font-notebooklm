@@ -1,7 +1,7 @@
 // MiddlePannel.jsx
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/stores";
-import { Copy, GitBranch, Loader2, Music2, NotebookTabs, SendHorizonal, Sparkles,ArrowDown } from "lucide-react";
+import { Copy, GitBranch, Loader2, Music2, NotebookTabs, SendHorizonal, Sparkles, ArrowDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { createBriefingDoc, createMindMap, createSummary, sendChatMessage, type chatHistoryType, type messageType, type questionAndDocOverviewType } from "@/api/notes";
@@ -15,7 +15,7 @@ import remarkGfm from "remark-gfm";
 import { SuggestedInput } from "./SuggestedInput";
 
 
-const MiddlePannel = ({ chatHistory, userId, note,aiResult }: { chatHistory: chatHistoryType, userId: string, note: NoteType,aiResult:questionAndDocOverviewType }) => {
+const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: chatHistoryType, userId: string, note: NoteType, aiResult: questionAndDocOverviewType }) => {
     const { _id: noteId } = note
     const dispatch = useDispatch<AppDispatch>();
     const { middlePanelDefaultWidth } = useSelector((state: RootState) => state.chat);
@@ -34,12 +34,14 @@ const MiddlePannel = ({ chatHistory, userId, note,aiResult }: { chatHistory: cha
         setLoading(true)
         dispatch(addMessageInChatHistory(newMessage))
 
-        const data = await sendChatMessage({ userId, noteId, query: inputValue })
+
+        const data = await sendChatMessage({ userId, noteId, query: inputValue||newMessage?.content })
         setLoading(false)
-  setTimeout(scrollToBottom, 100);
+        setTimeout(scrollToBottom, 100);
         dispatch(addMessageInChatHistory(data?.message))
         setInputValue("");
     }
+
     const sendMessage = async () => {
         if (!inputValue.trim()) return;
 
@@ -53,15 +55,16 @@ const MiddlePannel = ({ chatHistory, userId, note,aiResult }: { chatHistory: cha
     };
 
 
-    async function selectQuestion(question:string){
-        
+    async function selectQuestion(question: string) {
         const newMessage: messageType = {
             role: "user",
             content: question,
             userId, noteId
         };
+
+
         await sendUserMessage({ newMessage })
-        
+
     }
 
 
@@ -106,91 +109,90 @@ const MiddlePannel = ({ chatHistory, userId, note,aiResult }: { chatHistory: cha
 
 
 
-return (
-  <div
-    style={{
-      width: `${middlePanelDefaultWidth}%`,
-    }}
-    className={`bg-white transition-all duration-300 shadow-sm rounded-md h-full p-4 flex flex-col`}
-  >
-    {/* chat section */}
-    <div
-      ref={chatContainerRef}
-      className="relative flex-1 overflow-y-auto mb-4 space-y-3 pr-2"
-    >
-      <div className="flex justify-between items-center mb-4 flex-shrink-0">
-        <p className="text-base text-gray-800">Chat</p>
-      </div>
-
-      <hr className="mb-2" />
-
-      <MiddlePanelHeader aiResult={aiResult} note={note} docIds={docIds} />
-
-      {/* messages */}
-      {chatHistory?.chatHistory?.map((msg, index) => ChatMessage({ msg }))}
-    </div>
-
-    {/* jump-to-bottom button */}
-    {/* {showScrollButton && (
-      <div className="flex justify-center mb-3">
-        <button
-          onClick={scrollToBottom}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white shadow-md rounded-full px-4 py-1.5 flex items-center gap-2 transition-all"
+    return (
+        <div
+            style={{
+                width: `${middlePanelDefaultWidth}%`,
+            }}
+            className={`bg-white transition-all duration-300 shadow-sm rounded-md h-full p-4 flex flex-col`}
         >
-             <ArrowDown />
-          <span className="text-sm font-medium">Jump to bottom</span>
-         
-        </button>
-      </div>
-    )} */}
+            {/* chat section */}
+            <div
+                ref={chatContainerRef}
+                className="relative flex-1 overflow-y-auto mb-4 space-y-3 pr-2"
+            >
+                <div className="flex justify-between items-center mb-4 flex-shrink-0">
+                    <p className="text-base text-gray-800">Chat</p>
+                </div>
 
-    {/* bordered chat-input card */}
-    <div className="relative border border-gray-200 rounded-2xl p-3 bg-white">
-      {/* main input row */}
-      <div className="flex items-center gap-3">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={onKeyDownMessage}
-          placeholder="Start typing..."
-          className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-400 px-2 py-2"
-          aria-label="Message input"
-        />
+                <hr className="mb-2" />
 
-        <div className="text-xs text-gray-500 whitespace-nowrap">
-          {docIds?.length} sources
+                <MiddlePanelHeader aiResult={aiResult} note={note} docIds={docIds} />
+
+                {/* messages */}
+                {chatHistory?.chatHistory?.map((msg, index) => ChatMessage({ msg }))}
+            </div>
+
+            {/* jump-to-bottom button */}
+            {showScrollButton && (
+                <div className="flex justify-center mb-3">
+                    <button
+                        onClick={scrollToBottom}
+                        className="bg-indigo-500 hover:bg-indigo-600 text-white shadow-md rounded-full px-4 py-1.5 flex items-center gap-2 transition-all"
+                    >
+                        <ArrowDown />
+                        <span className="text-sm font-medium">Jump to bottom</span>
+
+                    </button>
+                </div>
+            )}
+
+            {/* bordered chat-input card */}
+            <div className="relative border border-gray-200 rounded-2xl p-3 bg-white">
+                {/* main input row */}
+                <div className="flex items-center gap-3">
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={onKeyDownMessage}
+                        placeholder="Start typing..."
+                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-400 px-2 py-2"
+                        aria-label="Message input"
+                    />
+
+                    <div className="text-xs text-gray-500 whitespace-nowrap">
+                        {docIds?.length} sources
+                    </div>
+
+                    <button
+                        onClick={sendMessage}
+                        disabled={loading}
+                        aria-label="Send"
+                        className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition 
+            ${loading
+                                ? "bg-indigo-400 cursor-not-allowed"
+                                : "bg-indigo-500 hover:bg-indigo-600"
+                            }`}
+                        title="Send"
+                    >
+                        {loading ? (
+                            <Loader2 className="animate-spin text-white" size={18} />
+                        ) : (
+                            <SendHorizonal className="text-white" size={16} />
+                        )}
+                    </button>
+                </div>
+
+            </div>
+            <SuggestedInput selectQuestion={selectQuestion} aiResult={aiResult} />
         </div>
-
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          aria-label="Send"
-          className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition 
-            ${
-              loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-500 hover:bg-indigo-600"
-            }`}
-          title="Send"
-        >
-          {loading ? (
-            <Loader2 className="animate-spin text-white" size={18} />
-          ) : (
-            <SendHorizonal className="text-white" size={16} />
-          )}
-        </button>
-      </div>
-    
-    </div>
-    <SuggestedInput selectQuestion={selectQuestion} aiResult={aiResult} />
-  </div>
-);
+    );
 
 };
 
 
-const MiddlePanelHeader = ({ note, docIds,aiResult }: { note: NoteType, docIds: string[],aiResult:questionAndDocOverviewType }) => {
+const MiddlePanelHeader = ({ note, docIds, aiResult }: { note: NoteType, docIds: string[], aiResult: questionAndDocOverviewType }) => {
 
     const [audioLoading, setAudioLoading] = useState(false);
     const [summaryLoading, setSummaryLoading] = useState(false);
@@ -247,14 +249,16 @@ const MiddlePanelHeader = ({ note, docIds,aiResult }: { note: NoteType, docIds: 
 
     return (<div className="mb-3">
         <div>
-            <span style={{ fontSize: "4rem" }}>💡</span>
+            <span style={{ fontSize: "4rem" }}>
+                {note?.image}
+            </span>
 
         </div>
         <div className="mb-4">
             <p className="text-3xl mb-2">{note?.title}</p>
             <p className="text-sm">{docIds?.length} sources</p>
             <p className="py-2 text-sm  bg-gray-10 text-gray-800 mb-4  ">
-             {aiResult?.aiResult?.doc_overview}
+                {aiResult?.aiResult?.doc_overview}
             </p>
             <p>
                 <Button

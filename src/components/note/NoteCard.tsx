@@ -12,27 +12,63 @@ type NoteCardProps = {
     notebooks: NoteType[];
     viewNoteDetail:(id:string)=>void
 };
+
+const cards = [
+  'bg1',
+  'bg2',
+  'bg3',
+  'bg4',
+  'bg5',
+  'bg6',
+  'bg7',
+  'bg8',
+  'bg9',
+  'bg10'
+  
+];
+
+export function getRandomBg() {
+  const randomIndex = Math.floor(Math.random() * cards.length);
+  return cards[randomIndex];
+}
+
 const NoteCard = ({ notebooks ,viewNoteDetail}: NoteCardProps) => {
+
+    const cards=['bg-blue-50','bg-red-50','bg-orange-50','bg-green-50','bg-yellow-50','bg-gray-50']
+
     return (<>
         {
             notebooks.map((note: NoteType) => (
 
                 <div
                     key={note._id}
-                    className={`relative p-4 rounded-xl shadow-sm hover:shadow-md transition h-52 bg-white`}
+                    className={`relative p-4 rounded-xl shadow-sm hover:shadow-md transition h-52 ${getRandomBg()}`}
                     onClick={()=>viewNoteDetail(note?._id)}
                 >
 
                     {/* Image at top */}
                     <div className="h-24">
-                        <img
+                      {note?.image && (
+  typeof note.image === "string" && note.image.startsWith("http")
+    ? (
+        
+
+         <img
                             src={note.image || DefaultImage} // fallback if no image
                             onError={(e) => {
                                 e.currentTarget.src = DefaultImage;
                             }}
                             className="pt-2"
                             width={100}
-                        />
+                        /> 
+      )
+    : (
+        <span style={{ fontSize: "4rem" }}>
+          {note.image}
+        </span>
+      )
+)}
+                     
                     </div>
 
                     {/* Content */}

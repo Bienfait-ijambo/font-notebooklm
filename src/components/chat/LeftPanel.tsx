@@ -12,6 +12,7 @@ import {
   PanelLeft,
   Plus,
   Search,
+  Youtube,
   
 } from "lucide-react";
 import { toggleAddSourceNoteModal } from "@/store/addSourceSlice";
@@ -20,6 +21,8 @@ import { Checkbox } from "../ui/checkbox";
 import { toggleDiscoveryModal } from "@/store/discoveryModalSlice";
 import { useState } from "react";
 import { addDocIds } from "@/store/rightPanelSlice";
+// import PdfIcon from '@/assets/pdf-1512.svg'
+import PdfIcon from '@/assets/pdf.png'
 
 type LeftPanelProps = {
   note: NoteType;
@@ -131,8 +134,8 @@ const LeftPanel = ({ note, loading }: LeftPanelProps) => {
                     key={doc._id}
                     className="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md"
                   >
-                    <FileText className="text-blue-500" size={20} />
-                    <span className="flex-1 text-base text-gray-600 truncate">{doc?.title}</span>
+                    <SourceIcon type={doc?.source_type} />
+                    <span className="flex-1 text-base text-gray-600 truncate"> {doc?.title}  </span>
                     <Checkbox
                       className="cursor-pointer"
                       checked={selectedDocs.includes(doc._id)}
@@ -192,6 +195,39 @@ const DocRowSkeleton: React.FC<DocRowSkeletonProps> = ({ count = 5 }) => {
     </div>
   );
 };
+
+
+
+interface SourceIconProps {
+  type?: string;
+}
+
+ function SourceIcon({ type = "" }: SourceIconProps) {
+  const normalized = type.toLowerCase();
+
+  if (normalized.includes("youtube")) {
+    return <Youtube className="text-red-500" />;
+  }
+
+  if (normalized.includes("pdf")) {
+    return   <img
+        src={PdfIcon}
+        alt="PDF Icon"
+        width={24}
+        height={24}
+        className="rounded"
+      />
+  }
+
+
+  // if (normalized.includes("mindmap")) {
+  //   return <GitBranch className="text-orange-500" size={20} />;
+  // }
+
+
+
+  return   <FileText className="text-blue-500" size={20} />
+}
 
 
 export default LeftPanel;

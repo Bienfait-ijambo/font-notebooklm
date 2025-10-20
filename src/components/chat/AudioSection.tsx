@@ -187,4 +187,7 @@ function formatTime(time: number) {
   return `${minutes}:${seconds}`;
 }
 
+
+
+
 export default AudioSection;
