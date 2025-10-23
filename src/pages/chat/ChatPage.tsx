@@ -44,7 +44,7 @@ function ChatPage() {
 
       dispatch(fetchChats({userId:userData?._id as string,noteId:id}))
 
-      dispatch(fetchDocOverviewAndQuestions(id))
+      // dispatch(fetchDocOverviewAndQuestions(id))
 
       dispatch(fetchUserCreditAndPayment(userData?._id))
 
