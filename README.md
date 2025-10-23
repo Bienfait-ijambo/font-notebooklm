@@ -1,12 +1,25 @@
-# React + TypeScript + Vite
+# 🧠 Font NotebookLM — React + TypeScript + Vite
 
-## fix-chatinput-bug
 
-Clone this branch : https://github.com/Bienfait-ijambo/font-notebooklm/tree/fix-chatinput-bug
+## 🚀 Getting Started
 
-To run the app
+Follow these steps to set up and run the project locally.
 
-npm i
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/Bienfait-ijambo/font-notebooklm.git
+
+cd font-notebooklm
+
+git checkout -b fix-chatinput-bug
+
+
+link Branch to remote:
+
+git branch --set-upstream-to=origin/fix-chatinput-bug fix-chatinput-bug
+
+
+git pull
+
 npm run dev
-
 
