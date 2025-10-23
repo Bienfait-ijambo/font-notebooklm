@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/stores";
 import { Copy, GitBranch, Loader2, Music2, NotebookTabs, SendHorizonal, Sparkles, ArrowDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { createBriefingDoc, createMindMap, createSummary, sendChatMessage, type chatHistoryType, type messageType, type questionAndDocOverviewType } from "@/api/notes";
 import { addMessageInChatHistory } from "@/store/chatHistorySlice";
@@ -13,6 +13,7 @@ import { fetchNoteSourceResult } from "@/store/rightPanelSlice";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SuggestedInput } from "./SuggestedInput";
+import { ChatInput } from "./ChatInput";
 
 
 const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: chatHistoryType, userId: string, note: NoteType, aiResult: questionAndDocOverviewType }) => {
@@ -35,7 +36,7 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
         dispatch(addMessageInChatHistory(newMessage))
 
 
-        const data = await sendChatMessage({ userId, noteId, query: inputValue||newMessage?.content })
+        const data = await sendChatMessage({ userId, noteId, query: inputValue || newMessage?.content })
         setLoading(false)
         setTimeout(scrollToBottom, 100);
         dispatch(addMessageInChatHistory(data?.message))
@@ -130,7 +131,14 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
                 <MiddlePanelHeader aiResult={aiResult} note={note} docIds={docIds} />
 
                 {/* messages */}
-                {chatHistory?.chatHistory?.map((msg, index) => ChatMessage({ msg }))}
+                {/* {chatHistory?.chatHistory?.map((msg, index) => ChatMessage({ msg }))} */}
+
+
+{/* performance optimization */}
+                {chatHistory?.chatHistory?.map((msg, index) => (
+                    <ChatMessage key={index} msg={msg} />
+                ))}
+
             </div>
 
             {/* jump-to-bottom button */}
@@ -151,15 +159,13 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
             <div className="relative border border-gray-200 rounded-2xl p-3 bg-white">
                 {/* main input row */}
                 <div className="flex items-center gap-3">
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={onKeyDownMessage}
-                        placeholder="Start typing..."
-                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-400 px-2 py-2"
-                        aria-label="Message input"
+                   
+                    <ChatInput
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        onKeyDownMessage={onKeyDownMessage}
                     />
+
 
                     <div className="text-xs text-gray-500 whitespace-nowrap">
                         {docIds?.length} sources
@@ -190,6 +196,11 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
     );
 
 };
+
+
+
+
+
 
 
 const MiddlePanelHeader = ({ note, docIds, aiResult }: { note: NoteType, docIds: string[], aiResult: questionAndDocOverviewType }) => {
@@ -341,7 +352,7 @@ const MiddlePanelHeader = ({ note, docIds, aiResult }: { note: NoteType, docIds:
 
 type Msg = { role: "ai" | "user"; content: string };
 
-function ChatMessage({ msg }: { msg: Msg }) {
+const  ChatMessage=memo(({ msg }: { msg: Msg }) =>{
     return (
         <div className={`flex ${msg.role === "ai" ? "justify-start" : "justify-end"}`}>
             <div
@@ -393,7 +404,7 @@ function ChatMessage({ msg }: { msg: Msg }) {
             </div>
         </div>
     );
-}
+})
 
 
 
