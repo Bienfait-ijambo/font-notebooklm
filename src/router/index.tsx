@@ -5,6 +5,11 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 import NotFoundPage from "@/pages/404/NotFoundPage";
 import HomePage from "@/pages/HomePage";
+import Workflow from "@/pages/zapier/workflow";
+import Workflow2 from "@/pages/zapier/workflow2";
+import TestingPage from '@/pages/zapier/TestingPage'
+import TestingPage2 from '@/pages/zapier/TestingPage2'
+
 
 export const router = createBrowserRouter([
 
@@ -23,6 +28,31 @@ export const router = createBrowserRouter([
       //    }
       // ]
    },
+
+    {
+      path: '/workflow',
+      element: <Workflow />
+    
+   },
+   
+    {
+      path: '/workflow2',
+      element: <Workflow2 />
+    
+   },
+   
+    {
+      path: '/testing',
+      element: <TestingPage />
+    
+   },
+    {
+      path: '/testing2',
+      element: <TestingPage2 />
+    
+   },
+  
+
    {
       path: '/auth',
       Component: lazy(() => import("@/layouts/AuthLayout")),
