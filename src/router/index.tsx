@@ -9,6 +9,7 @@ import Workflow from "@/pages/zapier/workflow";
 import Workflow2 from "@/pages/zapier/workflow2";
 import TestingPage from '@/pages/zapier/TestingPage'
 import TestingPage2 from '@/pages/zapier/TestingPage2'
+import TestingPage3 from "@/pages/zapier/TestingPage3";
 
 
 export const router = createBrowserRouter([
@@ -51,7 +52,11 @@ export const router = createBrowserRouter([
       element: <TestingPage2 />
     
    },
-  
+    {
+      path: '/testing3',
+      element: <TestingPage3 />
+    
+   },
 
    {
       path: '/auth',
