@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router';
-import { LogOut } from 'lucide-react';
+import { Key, LogOut,Palette, User } from 'lucide-react';
 import { ThemeSwitch } from './theme-switch';
 
 const UserAvatar = ({ user, className }: any) => {
@@ -59,7 +59,7 @@ export const AuthButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="flex flex-col gap-1 w-64 text-sm"
+        className="flex ml-4  flex-col gap-1 w-54 text-sm"
       >
         <div className="flex items-center p-2 gap-2">
           <UserAvatar
@@ -84,8 +84,17 @@ export const AuthButton = () => {
             to="/settings/account"
         
           >
-            {/* <Icons.user className="h-4 w-4" /> */}
+            <User className="h-4 w-4" />
             Account Settings
+          </Link>
+        </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+          <Link
+            to="/settings/account"
+        
+          >
+            <Key className="h-4 w-4" />
+            API Keys
           </Link>
         </DropdownMenuItem>
      
@@ -93,7 +102,7 @@ export const AuthButton = () => {
         <DropdownMenuSeparator />
         <div className="flex items-center justify-between gap-2 p-2 py-1 rounded-md hover:bg-muted">
           <div className="flex items-center gap-2">
-            {/* <Icons.theme className="h-4 w-4" /> */}
+            <Palette className="h-4 w-4" />
             <span className="text-sm font-medium">Theme</span>
           </div>
           <ThemeSwitch />

@@ -15,6 +15,8 @@ function LoginPage() {
                     <p className="text-center text-gray-600 mb-8">
                         Sign in to continue to your account
                     </p>
+        <div className="bg-primary text-primary-foreground h-8 mt-10">Hello</div>
+
                     <button
                         onClick={handleGoogleLogin}
                         className="flex items-center mb-10 cursor-pointer justify-center w-full gap-3 px-2 py-3 border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition bg-white"
@@ -23,6 +25,8 @@ function LoginPage() {
                         Continue with Google
                     </button>
                 </div>
+
+                
 
             </div>
         </>
