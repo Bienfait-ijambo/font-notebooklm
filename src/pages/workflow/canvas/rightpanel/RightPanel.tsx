@@ -4,14 +4,16 @@
 import { Button } from "@/components/ui/button";
 
 
-import LeftPanel from "./LeftPanel";
-import TopNav from "./TopNav";
-import CanvasFlow from "./canvas/CanvasFlow";
+import LeftPanel from "../leftpanel/LeftPanel";
+import TopNav from "../../TopNav";
+import CanvasFlow from "../CanvasFlow";
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { ArrowUp, Download, MessageSquare, RotateCw, Shuffle, Terminal, Trash2, X } from "lucide-react";
+import { ArrowUp, Download, MessageSquare, RotateCw, Shuffle, Terminal, Trash2, Wrench, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
 
 
 
@@ -38,15 +40,24 @@ export function RightPanel({ node, onSave }) {
     setTimeout(() => setChatMessages((m) => [...m, { id: Date.now() + 1, text: "Assistant reply (simulated)", from: "assistant", time: new Date() }]), 600);
   }
 
+
+
+
+
+  
+        const dispatch = useDispatch();
+    const { nodes, edges } = useSelector((state: RootState) => state.flow);
+  
+   
+
   return (
     <div className="flex flex-col h-full">
       {/* Tab bar */}
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-3 py-2 bg-white dark:bg-gray-800">
         <div className="flex items-center gap-2">
           {[
-            // { id: "flow", label: "Flow" },
-            // { id: "code", label: "Code" },
-            // { id: "data", label: "Data" },
+     
+            { id: "tool", label: "ToolBox",icon:<Wrench size={18} /> },
             { id: "chat", label: "Chat", icon: <MessageSquare className="w-4 h-4" /> },
             // { id: "properties", label: "Properties" },
             { id: "logs", label: "Logs", icon: <Terminal className="w-4 h-4" /> },
@@ -101,15 +112,10 @@ export function RightPanel({ node, onSave }) {
         {activeTab === "logs" && (
           <div className="h-full">
             <div className="h-full bg-black text-white  rounded-md font-mono text-sm" style={{ minHeight: 400 }}>
-              {logs.length === 0 ? (
-                <div className="text-gray-400">No logs found</div>
-              ) : (
-                <div className="space-y-1">
-                  {logs.map((l) => (
-                    <div key={l.id}>{l.text}</div>
-                  ))}
-                </div>
-              )}
+           
+       
+
+            <pre className="bg-gray-800 text-white p-2 rounded text-xs overflow-auto">{JSON.stringify(nodes, null, 2)}</pre>
             </div>
           </div>
         )}

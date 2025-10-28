@@ -7,6 +7,7 @@ import discoveryModalSlice from './discoveryModalSlice'
 import rightPanelSlice from './rightPanelSlice'
 import chatHistorySlice from './chatHistorySlice'
 import creditMenuSlice from './creditMenuSlice'
+import flowSlice from './workflow/workflowSlice'
 export const store = configureStore({
   reducer: {
      chat:chatSlice,
@@ -15,7 +16,8 @@ export const store = configureStore({
      discoveryModal:discoveryModalSlice,
      rightPanel:rightPanelSlice,
      chatHistory:chatHistorySlice,
-     creditMenu:creditMenuSlice
+     creditMenu:creditMenuSlice,
+     flow:flowSlice
   },
 })
 

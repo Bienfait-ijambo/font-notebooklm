@@ -3,9 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Bot, ChevronLeft, ChevronRight, Grid, Home, PersonStanding, Plus, RefreshCcwDot, Settings, Square } from "lucide-react";
 import { useEffect, useState } from "react";
-import { AuthButton } from "../zapier/AuthButton";
+import { AuthButton } from "../../../zapier/AuthButton";
 
 import { Wrench } from "lucide-react";
+import { addNode } from "@/store/workflow/workflowSlice";
+import { useDispatch } from "react-redux";
 
 const LeftPanel = () => {
 
@@ -19,10 +21,12 @@ const LeftPanel = () => {
 
     const APPS = [
         { id: "google-sheets", label: "Agent", icon: <Bot size={18} /> },
+        { id: "toolx", label: "Tool", icon: <Bot size={18} /> },
+        { id: "Input", label: "Input", icon: <Bot size={18} /> },
+
+
         { id: "google-", label: "End", icon: <Square size={18} /> },
-        {
-            id: "google-drivxe", label: "Tools Box", icon: <Wrench size={18} />
-        },
+
     ];
     const Logics = [
         { id: "google-sheets", label: "If/else", icon: <Bot size={18} /> },
@@ -50,6 +54,30 @@ const LeftPanel = () => {
             window.removeEventListener("mouseup", onMouseUp);
         };
     }, [isResizing]);
+
+
+
+
+
+    const dispatch = useDispatch();
+    const handleAddNode = (type: "agent" | "tool" | "inputNode" | "outputNode") => {
+        dispatch(addNode(type));
+    };
+
+
+
+    function showNode(label: string) {
+        if (label == 'Agent') {
+            handleAddNode('agent')
+        } else if (label == 'Tool') {
+            handleAddNode('tool')
+        } else if (label == 'Input') {
+            handleAddNode('inputNode')
+
+        }
+    }
+
+
 
 
 
@@ -116,6 +144,7 @@ const LeftPanel = () => {
                         <div
                             key={app.id}
                             draggable
+                            onClick={() => showNode(app.label)}
                             className={`flex items-center gap-2 p-2 rounded-md hover:bg-slate-50 cursor-grab ${collapsed ? "justify-center" : ""}`}
                         >
                             <div className="w-8 h-5 flex items-center justify-center rounded  ">{app.icon}</div>

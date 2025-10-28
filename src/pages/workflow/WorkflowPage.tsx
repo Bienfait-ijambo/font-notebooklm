@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 
 
-import LeftPanel from "./LeftPanel";
+import LeftPanel from "./canvas/leftpanel/LeftPanel";
 import TopNav from "./TopNav";
 import CanvasFlow from "./canvas/CanvasFlow";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ArrowUp, Download, MessageSquare, RotateCw, Shuffle, Terminal, Trash2, X } from "lucide-react";
-import { RightPanel } from "./RightPanel";
+import { RightPanel } from "./canvas/rightpanel/RightPanel";
 
 
 
