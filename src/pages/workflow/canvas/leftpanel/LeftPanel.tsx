@@ -23,6 +23,8 @@ const LeftPanel = () => {
         { id: "google-sheets", label: "Agent", icon: <Bot size={18} /> },
         { id: "toolx", label: "Tool", icon: <Bot size={18} /> },
         { id: "Input", label: "Input", icon: <Bot size={18} /> },
+        { id: "output", label: "output", icon: <Bot size={18} /> },
+
 
 
         { id: "google-", label: "End", icon: <Square size={18} /> },
@@ -73,6 +75,10 @@ const LeftPanel = () => {
             handleAddNode('tool')
         } else if (label == 'Input') {
             handleAddNode('inputNode')
+
+        }
+        else if (label == 'output') {
+            handleAddNode('outputNode')
 
         }
     }

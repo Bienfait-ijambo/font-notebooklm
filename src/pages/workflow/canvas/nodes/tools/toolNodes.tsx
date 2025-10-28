@@ -34,7 +34,7 @@ export function InputNode({ data }: any) {
 
 export function OutputNode({ data }: any) {
   return (
-    <div className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white">
+    <div className="rounded-md border bg-white/5 px-3 py-2 text-sm text-gray-800">
       <div className="font-medium">{data.label || "Output"}</div>
       <Handle type="target" position={Position.Left} id="in" style={{ background: THEME.outputHandle }} />
     </div>
