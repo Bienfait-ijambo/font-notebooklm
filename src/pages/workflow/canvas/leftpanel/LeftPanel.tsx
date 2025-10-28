@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Bot, ChevronLeft, ChevronRight, Grid, Home, PersonStanding, Plus, RefreshCcwDot, Settings, Square } from "lucide-react";
+import { Bot, ChevronLeft, ChevronRight, Grid, Home, MessagesSquare, PersonStanding, Plus, RefreshCcwDot, Settings, Square, SquareDashedMousePointer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthButton } from "../../../zapier/AuthButton";
 
 import { Wrench } from "lucide-react";
 import { addNode } from "@/store/workflow/workflowSlice";
 import { useDispatch } from "react-redux";
+import MessageIcon from '@/assets/message.png'
 
 const LeftPanel = () => {
 
@@ -20,12 +21,12 @@ const LeftPanel = () => {
     const maxWidth = 520;
 
     const APPS = [
-        { id: "google-sheets", label: "Agent", icon: <Bot size={18} /> },
-        { id: "toolx", label: "Tool", icon: <Bot size={18} /> },
-        { id: "Input", label: "Input", icon: <Bot size={18} /> },
+        { id: "google-sheets", label: "Agent", background:'bg-blue-200', icon: <Bot size={25} /> },
+      
+        { id: "Input", label: "Input", icon: <SquareDashedMousePointer size={18} /> },
 
 
-        { id: "google-", label: "End", icon: <Square size={18} /> },
+        { id: "google-", label: "Output", icon: <Square size={18} /> },
 
     ];
     const Logics = [
@@ -60,22 +61,27 @@ const LeftPanel = () => {
 
 
     const dispatch = useDispatch();
-    const handleAddNode = (type: "agent" | "tool" | "inputNode" | "outputNode") => {
-        dispatch(addNode(type));
-    };
-
-
+  
 
     function showNode(label: string) {
         if (label == 'Agent') {
-            handleAddNode('agent')
-        } else if (label == 'Tool') {
-            handleAddNode('tool')
-        } else if (label == 'Input') {
-            handleAddNode('inputNode')
-
+             dispatch(addNode({node:'agent',icon: <Bot size={18} />,label:"Agent"}));
+        }  else if (label == 'Input') {
+             dispatch(addNode({node:'inputNode',icon:MessageIcon,label:"When chat message received"}));
+        }
+        else if (label == 'Output') {
+             dispatch(addNode({node:'outputNode',icon:<Square size={38} />,label:"When Agent Generate output"}));
         }
     }
+
+
+    // const dispatch = useDispatch();
+    
+    //     function showNode({type,name,image}:{type: 'tool'|'app'|'model',name:string,image:string}) {
+    //         if (type == 'tool') {
+    //          dispatch(addNode({node:'tool',icon:image,label:name}));
+    //         } 
+    //     }
 
 
 
@@ -147,7 +153,7 @@ const LeftPanel = () => {
                             onClick={() => showNode(app.label)}
                             className={`flex items-center gap-2 p-2 rounded-md hover:bg-slate-50 cursor-grab ${collapsed ? "justify-center" : ""}`}
                         >
-                            <div className="w-8 h-5 flex items-center justify-center rounded  ">{app.icon}</div>
+                            <div className="w-8 h-5 flex  items-center justify-center rounded text-blue-700 ">{app.icon}</div>
                             {!collapsed && (
                                 <>
                                     <div className="flex-1 text-sm ">{app.label}</div>

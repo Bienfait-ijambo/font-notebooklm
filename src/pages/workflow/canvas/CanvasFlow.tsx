@@ -36,28 +36,28 @@ const CanvasFlow = () => {
 
 
 
-      const dispatch = useDispatch();
-  const { nodes, edges } = useSelector((state: RootState) => state.flow);
-
- 
+    const dispatch = useDispatch();
+    const { nodes, edges } = useSelector((state: RootState) => state.flow);
 
 
 
-  const handleNodesChange = useCallback(
-    (changes: any) => dispatch(onNodesChange(changes)),
-    [dispatch]
-  );
 
-  const handleEdgesChange = useCallback(
-    (changes: any) => dispatch(onEdgesChange(changes)),
-    [dispatch]
-  );
 
-  
-  const handleConnect = useCallback(
-    (params: any) => dispatch(onConnect(params)),
-    [dispatch]
-  );
+    const handleNodesChange = useCallback(
+        (changes: any) => dispatch(onNodesChange(changes)),
+        [dispatch]
+    );
+
+    const handleEdgesChange = useCallback(
+        (changes: any) => dispatch(onEdgesChange(changes)),
+        [dispatch]
+    );
+
+
+    const handleConnect = useCallback(
+        (params: any) => dispatch(onConnect(params)),
+        [dispatch]
+    );
 
 
 
@@ -67,7 +67,7 @@ const CanvasFlow = () => {
 
         <div className="flex-1 relative" ref={reactFlowWrapper}>
 
-          
+
 
             <ReactFlowProvider>
                 <div className="absolute inset-0">
@@ -76,8 +76,8 @@ const CanvasFlow = () => {
                         edges={edges}
                         nodeTypes={nodeTypes}
                         onConnect={handleConnect}
-                       onNodesChange={handleNodesChange}
-                         onEdgesChange={handleEdgesChange}
+                        onNodesChange={handleNodesChange}
+                        onEdgesChange={handleEdgesChange}
                         fitView
                         nodesDraggable={mode === "select"}
                         panOnDrag={mode === "pan"}

@@ -8,12 +8,19 @@ import LeftPanel from "../leftpanel/LeftPanel";
 import TopNav from "../../TopNav";
 import CanvasFlow from "../CanvasFlow";
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { ArrowUp, Download, MessageSquare, RotateCw, Shuffle, Terminal, Trash2, Wrench, X } from "lucide-react";
+import { ArrowUp, Bolt, Cog, Download, ExternalLink, MessageSquare, Plus, RotateCw, Shuffle, Terminal, Trash2, Wrench, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
+import ToolBox from "./ToolBox";
+import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchToolConfig } from "./SearchToolConfig";
+import { DriveConfig } from "./DriveConfig";
+import { drive, Gmail } from "./config";
+import { GmailConfig } from "./GmailConfig";
 
 
 
@@ -44,11 +51,11 @@ export function RightPanel({ node, onSave }) {
 
 
 
-  
-        const dispatch = useDispatch();
-    const { nodes, edges } = useSelector((state: RootState) => state.flow);
-  
-   
+
+  const dispatch = useDispatch();
+  const { nodes, edges } = useSelector((state: RootState) => state.flow);
+
+
 
   return (
     <div className="flex flex-col h-full">
@@ -56,10 +63,10 @@ export function RightPanel({ node, onSave }) {
       <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-3 py-2 bg-white dark:bg-gray-800">
         <div className="flex items-center gap-2">
           {[
-     
-            { id: "tool", label: "ToolBox",icon:<Wrench size={18} /> },
+{ id: "properties", label: "Properties" ,icon: <Bolt className="w-4 h-4" />},
+            { id: "tool", label: "Tool", icon: <Wrench size={18} /> },
             { id: "chat", label: "Chat", icon: <MessageSquare className="w-4 h-4" /> },
-            // { id: "properties", label: "Properties" },
+            
             { id: "logs", label: "Logs", icon: <Terminal className="w-4 h-4" /> },
           ].map((t) => (
             <button
@@ -73,7 +80,7 @@ export function RightPanel({ node, onSave }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <button title="Clear logs" className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" onClick={clearLogs}><Trash2 className="w-4 h-4" /></button>
+
           <button title="Close" className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => onSave && onSave()}><X className="w-4 h-4" /></button>
         </div>
       </div>
@@ -100,11 +107,21 @@ export function RightPanel({ node, onSave }) {
                 <button className="px-2 py-1 rounded-full border text-sm">Extract data</button>
                 <button className="px-2 py-1 rounded-full border text-sm">Explain</button>
               </div>
-               {/* input area */}
-               <ChatInput />
+              {/* input area */}
+              <ChatInput />
 
-               
-   
+
+
+            </div>
+          </div>
+        )}
+
+
+        {activeTab === "tool" && (
+          <div className="h-full">
+            <div className="h-full  text-white  rounded-md font-mono text-sm" style={{ minHeight: 400 }}>
+
+                <ToolBox />
             </div>
           </div>
         )}
@@ -112,38 +129,21 @@ export function RightPanel({ node, onSave }) {
         {activeTab === "logs" && (
           <div className="h-full">
             <div className="h-full bg-black text-white  rounded-md font-mono text-sm" style={{ minHeight: 400 }}>
-           
-       
 
-            <pre className="bg-gray-800 text-white p-2 rounded text-xs overflow-auto">{JSON.stringify(nodes, null, 2)}</pre>
+
+
+              <pre className="bg-gray-800 text-white p-2 rounded text-xs overflow-auto">{JSON.stringify(nodes, null, 2)}</pre>
             </div>
           </div>
         )}
 
         {activeTab === "properties" && (
           <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Node properties</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div>
-                  <Label>ID</Label>
-                  <Input value={node?.id || ''} readOnly />
-                </div>
-                <div>
-                  <Label>Label</Label>
-                  <Input defaultValue={node?.data?.label?.split('')[0] || ''} />
-                </div>
-                <div>
-                  <Label>Connection</Label>
-                  <Input defaultValue={node?.data?.connection || ''} />
-                </div>
-                <div className="flex justify-end mt-2">
-                  <Button>Save</Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* <ModelConfigurationPanel /> */}
+
+            {/* <SearchToolConfig /> */}
+            {/* <DriveConfig drive={drive} /> */}
+            <GmailConfig gmail={Gmail} />
           </div>
         )}
 
@@ -198,5 +198,95 @@ function ChatInput() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+
+
+
+ function ModelConfigurationPanel() {
+  return (
+    <Card className=" shadow-none border-none rounded-md bg-transparent">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-semibold text-foreground">Agent</CardTitle>
+        <p className="text-sm text-muted-foreground">Call the model with your instructions and tools</p>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>Name</Label>
+          <Input placeholder="Agent" defaultValue="Agent" />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Instructions</Label>
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" size="icon" className="h-6 w-6">
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-6 w-6">
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          </div>
+          <textarea
+            className="w-full h-24 rounded-md border border-input bg-muted/20 px-3 py-2 text-sm text-foreground resize-none"
+            placeholder="Describe desired model behavior (tone, tool usage, response style)"
+          />
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <Label>Model</Label>
+          <Select defaultValue="gpt-5">
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="gpt-5">GPT-5</SelectItem>
+              <SelectItem value="gpt-4">GPT-4</SelectItem>
+              <SelectItem value="claude">Claude</SelectItem>
+              <SelectItem value="gemini">Gemini</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Reasoning effort</Label>
+          <Select defaultValue="low">
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select effort" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+       
+        <div className="space-y-2">
+          <Label>Output format</Label>
+          <Select defaultValue="text">
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select format" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="text">Text</SelectItem>
+              <SelectItem value="json">JSON</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between text-sm text-muted-foreground">
+        <Button variant="ghost" className="text-xs px-2 py-1">More</Button>
+        <Button variant="ghost" size="sm" className="text-xs flex items-center gap-1">
+          Evaluate <ExternalLink className="h-3 w-3" />
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
