@@ -1,0 +1,148 @@
+SIMPLE ASSISTANT : creation
+
+- single Agent on Canvas
+- single inputNode on canvas
+- single outputNode on cavans
+- single Model on agent
+
+----------------------------------------Output Stage
+
+ on outputNode we can have events
+
+   Events
+     - message received
+
+     actions
+
+     - create a file and send it to drive : [Gmail]
+     - calendar event [Create date a time when a file has been created]
+
+  Constraints-handle
+
+  - 2 Handle left[target] and right[source]
+  - right-handle[source] link-to[Gmail left handle]
+
+---------------------------------------------------------------------------
+
+
+  Gmail Node-events
+
+   - mail Received
+   - mail sent
+
+      actions
+        - create a drive file
+        - send that file to notion
+        - slack
+        - discord
+        - vector DB
+
+  Constraints-handle
+
+   - 2 Handle left[target] and right[source]
+   - Left-handle LinkTo[
+   right-handle outputNode,right-handle Drive,r-h Notion, r-h Slack, r-h-Disc,r-h Inputnode
+   ]
+   - Right-handle LinkTo[
+
+   left-handle Drive,l-h Notion, l-h Slack, l-h-Disc
+
+   ]
+
+--------------------------------------------------------------------------
+
+  Drive Node-events
+  - file created
+  - file upload
+  - file modified
+
+        actions
+          - send-to-gmail
+          - send to notion
+          - discord
+          - slack
+          - send it to vectorDB
+
+    Constraints-handle
+
+   - 2 Handle left[target] and right[source]
+
+
+   - Left-handle LinkTo[
+       r-h Notion
+   ]
+
+    - Right-handle LinkTo[
+
+     l-h Notion, l-h Slack, l-h-Disc,l-VectorDB
+
+   ]
+
+----------------------------------------------------------------------------
+
+  Notion Node-events
+  - file created
+  - file upload
+  - file modified
+
+        actions
+          - send-to-gmail
+          - send to notion
+          - discord
+          - slack
+          - drive
+          - send it to vectorDB
+
+
+ Constraints-handle
+
+   - 2 Handle left[target] and right[source]
+
+
+   - Left-handle LinkTo[
+       r-h Drive
+   ]
+
+    - Right-handle LinkTo[
+
+     l-h Drive, l-h Slack, l-h-Disc,l-VectorDB
+
+   ]
+
+
+------------------------------------------------------------------------
+  Slack Node-events
+  - message Receive
+  - message send
+
+        actions
+          - send-to-gmail
+          - send to notion
+          - discord
+          - slack
+          - send it to vectorDB
+
+
+----------------------------------------------------------------------
+  Vector DB
+  - no event
+
+     has left handler [Accept : drive,Gmail,Notion]
+     has right handler [Accept : Embedding Model only]
+
+   Constraints-handle
+
+   - 2 Handle left[target] and right[source]
+
+
+   - Left-handle LinkTo[
+       r-h Notion,
+       r-h Drive,
+       r-h inputNode
+   ]
+
+    - Right-handle LinkTo[
+
+     l-h EmbeddingModal
+
+   ]

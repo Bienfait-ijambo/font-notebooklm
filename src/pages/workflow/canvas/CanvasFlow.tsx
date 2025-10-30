@@ -22,7 +22,7 @@ import { getIconForTool } from "./nodes/utils";
 import { nodeTypes } from "./nodes/registerNode";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { onConnect, onEdgesChange, onNodesChange } from "@/store/workflow/workflowSlice";
+import { onConnect, onEdgesChange, onNodesChange, setEdges, setNodes, setSelectedNode, type NodeObjType } from "@/store/workflow/workflowSlice";
 
 
 const CanvasFlow = () => {
@@ -30,17 +30,13 @@ const CanvasFlow = () => {
 
     const reactFlowWrapper = useRef(null);
     const [rfInstance, setRfInstance] = useState(null);
-    const [selectedNode, setSelectedNode] = useState(null);
     // interaction mode: 'select' (default) or 'pan'
     const [mode, setMode] = useState("select");
 
 
 
     const dispatch = useDispatch();
-    const { nodes, edges } = useSelector((state: RootState) => state.flow);
-
-
-
+    const { nodes, edges,selectedNode } = useSelector((state: RootState) => state.flow);
 
 
     const handleNodesChange = useCallback(
@@ -62,6 +58,29 @@ const CanvasFlow = () => {
 
 
 
+// setNodes
+    // Selection change drives the overlay
+  const onSelectionChange = ({ nodes:selectedNodes }:{nodes:NodeObjType[]}) => {
+    if (selectedNodes && selectedNodes.length > 0) dispatch(setSelectedNode(selectedNodes[0]));
+    else dispatch(setSelectedNode(null));
+  };
+
+  const updateSelectedNodeLabel = (value) => {
+    // if (!selectedNode) return;
+    // dispatch(setNodes((nds) => nds.map((n) => (n.id === selectedNode.id ? { ...n, data: { ...n.data, label: value } } : n))));
+    // dispatch(setSelectedNode((s) => ({ ...s, data: { ...s.data, label: value } })));
+  };
+
+  const removeSelectedNode = () => {
+    if (!selectedNode) return;
+   dispatch( setNodes((nds) => nds.filter((n) => n.id !== selectedNode.id)));
+   dispatch( setEdges((eds) => eds.filter((e) => e.source !== selectedNode.id && e.target !== selectedNode.id)))
+   dispatch(setSelectedNode(null))
+  };
+
+ 
+
+
     return (
 
 
@@ -78,6 +97,7 @@ const CanvasFlow = () => {
                         onConnect={handleConnect}
                         onNodesChange={handleNodesChange}
                         onEdgesChange={handleEdgesChange}
+                        onSelectionChange={onSelectionChange}
                         fitView
                         nodesDraggable={mode === "select"}
                         panOnDrag={mode === "pan"}
@@ -92,11 +112,11 @@ const CanvasFlow = () => {
                     <BottomToolBar mode={mode} setMode={setMode} />
 
                     {/* config panel here */}
-                    {selectedNode && (
+                    {/* {selectedNode && (
                         <div>
 
                         </div>
-                    )}
+                    )} */}
                     {/* config panel here */}
                     {/* config panel here */}
                 </div>

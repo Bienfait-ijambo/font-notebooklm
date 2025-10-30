@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import GmailIcon from '@/assets/gmail.png'
+import { Trash } from "lucide-react";
+import type { NodeObjType } from "@/store/workflow/workflowSlice";
 // import { Switch } from "@/components/ui/switch";
 
-export function GmailConfig({ gmail }) {
+export function GmailConfig({ gmail ,selectedNode}:{gmail:any,selectedNode:NodeObjType}) {
   return (
     <Card className="shadow-none border-none rounded-md bg-transparent">
       {/* Header */}
@@ -17,13 +19,19 @@ export function GmailConfig({ gmail }) {
         className="flex flex-col gap-1 pb-3"
         style={{ borderLeft: `4px solid ${gmail.ui.color}` }}
       >
+       <div className="flex justify-between">
+      
+      
         <div className="flex items-center gap-3">
-          <img src={GmailIcon} alt={gmail.name} className="w-8 h-8 rounded-sm" />
+          <img src={selectedNode?.data?.icon} alt={gmail.name} className="w-8 h-8 rounded-sm" />
           <div>
-            <CardTitle className="text-base font-semibold">{gmail.name}</CardTitle>
-            <p className="text-xs text-muted-foreground">{gmail.description}</p>
+            <CardTitle className="text-base font-semibold"> </CardTitle>
           </div>
         </div>
+        <Button  variant="outline" size="sm" className="ml-60">
+            <Trash></Trash>
+        </Button> 
+       </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -36,6 +44,12 @@ export function GmailConfig({ gmail }) {
         </div>
 
         <Separator />
+
+
+<div className="space-y-2">
+          <Label className="text-sm font-medium">Name</Label>
+          <Input value={selectedNode?.data?.label}></Input>
+        </div>
 
         {/* Trigger Section */}
         <div className="space-y-2">
@@ -103,18 +117,7 @@ export function GmailConfig({ gmail }) {
           </div>
         ))}
 
-        <Separator />
-
-        {/* Extra options */}
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Send as draft</Label>
-          <Switch />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Notify on delivery</Label>
-          <Switch />
-        </div>
+        
       </CardContent>
 
       <CardFooter className="flex justify-between items-center text-sm pt-2">

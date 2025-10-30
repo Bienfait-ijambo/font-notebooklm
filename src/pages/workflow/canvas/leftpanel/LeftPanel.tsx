@@ -9,6 +9,8 @@ import { Wrench } from "lucide-react";
 import { addNode } from "@/store/workflow/workflowSlice";
 import { useDispatch } from "react-redux";
 import MessageIcon from '@/assets/message.png'
+import OutputIcon from '@/assets/output.png'
+
 
 const LeftPanel = () => {
 
@@ -16,7 +18,7 @@ const LeftPanel = () => {
     // left panel width & collapsed state
     const [leftWidth, setLeftWidth] = useState(235); // px
     const [isResizing, setIsResizing] = useState(false);
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const minWidth = 72;
     const maxWidth = 520;
 
@@ -70,7 +72,7 @@ const LeftPanel = () => {
              dispatch(addNode({node:'inputNode',icon:MessageIcon,label:"When chat message received"}));
         }
         else if (label == 'Output') {
-             dispatch(addNode({node:'outputNode',icon:<Square size={38} />,label:"When Agent Generate output"}));
+             dispatch(addNode({node:'outputNode',icon:OutputIcon,label:"When Agent Generate output"}));
         }
     }
 

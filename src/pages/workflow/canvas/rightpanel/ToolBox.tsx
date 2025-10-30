@@ -19,9 +19,13 @@ import Gmail from '@/assets/gmail.png'
 import Drive from '@/assets/drive.png'
 import Calendar from '@/assets/calendar.png'
 import Slack from '@/assets/slack.png'
-import Notion from '@/assets/notion.png'
-import { useDispatch } from "react-redux";
+import NotionIcon from '@/assets/notion.png'
+import { useDispatch, useSelector } from "react-redux";
 import { addNode } from "@/store/workflow/workflowSlice";
+import SlackIcon from '@/assets/slack.png'
+import DiscordIcon from '@/assets/bot.png'
+import type { RootState } from "@/store";
+
 
 
 
@@ -37,32 +41,36 @@ import { addNode } from "@/store/workflow/workflowSlice";
 type TabKey = "apps" | "ai" | "tools";
 
 
-
+type appListType='tool' | 'app' | 'model'| 'app_gmail'|"app_drive"|"app_calendar"|"app_notion"|'app_vector_db'|'app_slack'|'app_embedding'|'app_discord'
 const APPS = [
-    {type:"app", name: "Gmail", image: Gmail },
-    {type:"app", name: "Drive", image: Drive },
-    { type:"app",name: "Calendar", image: Calendar },
-    { type:"app",name: "Notion", image: Notion },
- {type:'app', name: "Vector DB", image: PineConeIcon },
+    { type: "app_gmail", name: "Gmail", image: Gmail },
+    { type: "app_drive", name: "Drive", image: Drive },
+    { type: "app_calendar", name: "Calendar", image: Calendar },
+    { type: "app_notion", name: "Notion", image: NotionIcon },
+    { type: 'app_vector_db', name: "Vector DB", image: PineConeIcon },
+    { type: 'app_slack', name: "Slack", image: SlackIcon },
+ { type: 'app_embedding', name: "Embedding Model", image: EmbeddingModal },
+ { type: 'app_discord', name: "Discord", image: DiscordIcon },
+
 
 
 ];
 
 const AI_ITEMS = [
-    {type:"model", name: "ChatGPT (OpenAI)", image: OpenAIIcon },
-    { type:"model",name: "Deep Seek", image: DeepSeekIcon },
-    { type:"model",name: "Qween", image: QweenIcon },
-    { type:"model",name: "Meta", image: MetaIcon },
-    { type:"model",name: "Gemini", image: GeminiIcon },
+    { type: "model", name: "ChatGPT (OpenAI)", image: OpenAIIcon },
+    { type: "model", name: "Deep Seek", image: DeepSeekIcon },
+    { type: "model", name: "Qween", image: QweenIcon },
+    { type: "model", name: "Meta", image: MetaIcon },
+    { type: "model", name: "Gemini", image: GeminiIcon },
 
 ];
 
 const TOOLS = [
-    {type:'tool', name: "Web Search", image: SearchIcon },
+    { type: 'tool', name: "Web Search", image: SearchIcon },
+
+    { type: 'tool', name: "Web Scraper", image: Crawler },
+    { type: 'tool', name: "Memory", image: Memory },
    
-    { type:'tool',name: "Web Scraper", image: Crawler },
-    { type:'tool',name: "Memory", image: Memory },
-    {type:'tool', name: "Embedding Model", image: EmbeddingModal },
 ];
 
 
@@ -72,12 +80,12 @@ export default function LeftPanel() {
     const [active, setActive] = useState<TabKey>("apps");
     const [query, setQuery] = useState("");
 
-const list = React.useMemo(() => {
-  const source = active === "apps" ? APPS : active === "ai" ? AI_ITEMS : TOOLS;
-  if (!query.trim()) return source;
-  const q = query.toLowerCase();
-  return source.filter((item) => item.name.toLowerCase().includes(q));
-}, [active, query]);
+    const list = React.useMemo(() => {
+        const source = active === "apps" ? APPS : active === "ai" ? AI_ITEMS : TOOLS;
+        if (!query.trim()) return source;
+        const q = query.toLowerCase();
+        return source.filter((item) => item.name.toLowerCase().includes(q));
+    }, [active, query]);
 
 
 
@@ -87,14 +95,48 @@ const list = React.useMemo(() => {
 
 
     const dispatch = useDispatch();
+    const { selectedNode } = useSelector((state: RootState) => state.flow);
 
-    function showNode({type,name,image}:{type: 'tool'|'app'|'model',name:string,image:string}) {
+
+
+    function showNode({ type, name, image }: { type: appListType, name: string, image: string }) {
         if (type == 'tool') {
-         dispatch(addNode({node:'tool',icon:image,label:name}));
+            dispatch(addNode({ node: 'tool', icon: image, label: name }));
         }
-         else if(type=='model'){
-         dispatch(addNode({node:'tool',icon:image,label:name}));
+        else if (type == 'model') {
+            dispatch(addNode({ node: 'tool', icon: image, label: name }));
 
+        }
+         else if (type == 'app_gmail') {
+            dispatch(addNode({ node: 'gmailNode', icon: Gmail, label: name }));
+
+        }
+        else if (type == 'app_discord') {
+            dispatch(addNode({ node: 'discordNode', icon: DiscordIcon, label: name }));
+
+        }
+        else if (type == 'app_drive') {
+            dispatch(addNode({ node: 'driveNode', icon: Drive, label: name }));
+
+        }
+        else if (type == 'app_embedding') {
+            dispatch(addNode({ node: 'embeddingModelNode', icon: EmbeddingModal, label: name }));
+
+        }
+        else if (type == 'app_notion') {
+            dispatch(addNode({ node: "notionNode", icon: NotionIcon, label: name }));
+
+        }
+         else if (type == 'app_slack') {
+            dispatch(addNode({ node: 'slackNode', icon: SlackIcon, label: name }));
+
+        }
+        else if (type == 'app_vector_db') {
+            dispatch(addNode({ node: 'vectordbNode', icon: PineConeIcon, label: name }));
+
+        }
+        else if (type == 'app_calendar') {
+           dispatch(addNode({ node: 'calendarNode', icon: Calendar, label: name }));
         }
     }
 
@@ -131,7 +173,7 @@ const list = React.useMemo(() => {
             <main className="flex-1 ml-[-15px]">
                 <Card className="h-full shadow-none border-none rounded-md bg-transparent">
                     <CardContent className="h-full  flex flex-col">
-                       
+
 
                         <div className="w-72">
                             <label htmlFor="search" className="sr-only">
@@ -154,7 +196,7 @@ const list = React.useMemo(() => {
                                 <ul className="space-y-1 mt-2">
                                     {list.map((item) => (
 
-                                        <li key={item.name} onClick={()=>showNode(item)} className="p-2 cursor-pointer flex items-center gap-2 hover:bg-muted/30 rounded-lg">
+                                        <li key={item.name} onClick={() => showNode(item)} className="p-2 cursor-pointer flex items-center gap-2 hover:bg-muted/30 rounded-lg">
                                             <img src={item.image} alt={item.name} className="h-8 w-8" />
                                             <div className="flex-1">
                                                 <div className="text-sm font-medium">{item.name}</div>

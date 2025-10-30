@@ -1,7 +1,7 @@
 /* register node types */
 
 import { AgentNode } from "./agent/AgentNodes";
-import { InputNode, OutputNode, ToolNode } from "./tools/toolNodes";
+import { calendarNode, driveNode, embeddingModelNode, gmailNode, InputNode, notionNode, OutputNode, slackNode, ToolNode, vectordbNode } from "./tools/toolNodes";
 
 
 export const nodeTypes = {
@@ -9,4 +9,15 @@ export const nodeTypes = {
   tool: ToolNode,
   inputNode: InputNode,
   outputNode: OutputNode,
+  gmailNode:gmailNode,
+  driveNode:driveNode,
+  notionNode:notionNode,
+  slackNode:slackNode,
+  vectordbNode:vectordbNode,
+  embeddingModelNode:embeddingModelNode,
+  calendarNode:calendarNode
+
+
+
+
 };

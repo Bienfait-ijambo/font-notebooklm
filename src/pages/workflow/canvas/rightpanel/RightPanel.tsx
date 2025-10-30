@@ -53,7 +53,7 @@ export function RightPanel({ node, onSave }) {
 
 
   const dispatch = useDispatch();
-  const { nodes, edges } = useSelector((state: RootState) => state.flow);
+  const { nodes, edges,selectedNode } = useSelector((state: RootState) => state.flow);
 
 
 
@@ -132,7 +132,7 @@ export function RightPanel({ node, onSave }) {
 
 
 
-              <pre className="bg-gray-800 text-white p-2 rounded text-xs overflow-auto">{JSON.stringify(nodes, null, 2)}</pre>
+              <pre className="bg-gray-800 text-white p-2 rounded text-xs overflow-auto">{JSON.stringify(edges, null, 2)}</pre>
             </div>
           </div>
         )}
@@ -143,7 +143,7 @@ export function RightPanel({ node, onSave }) {
 
             {/* <SearchToolConfig /> */}
             {/* <DriveConfig drive={drive} /> */}
-            <GmailConfig gmail={Gmail} />
+            <GmailConfig gmail={Gmail} selectedNode={selectedNode} />
           </div>
         )}
 
