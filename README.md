@@ -1,5 +1,3 @@
-# 🧠 Font NotebookLM — React + TypeScript + Vite
-
 
 ## 🚀 How to run this app
 
