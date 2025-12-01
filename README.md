@@ -1,7 +1,7 @@
 # 🧠 Font NotebookLM — React + TypeScript + Vite
 
 
-## 🚀 Getting Started
+## 🚀 How to run this app
 
 Follow these steps to set up and run the project locally.
 
