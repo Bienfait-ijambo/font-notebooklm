@@ -1,0 +1,74 @@
+/* in your global CSS or tailwind config */
+@layer utilities {
+  @keyframes gradient-border {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animated-gradient-border {
+    background: linear-gradient(270deg, #ff0080, #7928ca, #00f5ff, #fffc00);
+    background-size: 600% 600%;
+    animation: gradient-border 3s ease infinite;
+    border-radius: 0.5rem; /* same as your div rounding */
+    padding: 2px; /* outer border size */
+  }
+
+  .animated-gradient-inner {
+    border-radius: 0.5rem; /* match outer */
+    background: white; /* inner content */
+    width: 100%;
+    height: 100%;
+  }
+}
+
+
+
+
+/* Professional animated gradient border */
+/* Professional animated gradient border */
+/* Professional animated gradient border */
+
+.animated-gradient-border {
+  position: relative;
+  border-radius: 0.5rem; /* matches rounded-md */
+  background-color: inherit; /* keep inner background intact */
+  z-index: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.animated-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px; /* border thickness */
+  border-radius: inherit;
+  background: linear-gradient(
+    270deg,
+    #ff6ec4,
+    #7873f5,
+    #42f5ef,
+    #ff6ec4
+  );
+  background-size: 600% 600%;
+  animation: gradient-border 3s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+/* subtle hover glow */
+.animated-gradient-border:hover::before {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
+/* Gradient animation keyframes */
+@keyframes gradient-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

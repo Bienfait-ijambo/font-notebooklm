@@ -1,12 +1,14 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit'
 
-export const addSourceSlice= createSlice({
+export const discoveryModalSlice= createSlice({
     name: 'noteCreation',
     initialState: {
         modal: false,
+  
+      
     },
     reducers: {
-        toggleAddSourceNoteModal: state => {
+        toggleDiscoveryModal: state => {
 
             state.modal=!state.modal
         },
@@ -15,7 +17,7 @@ export const addSourceSlice= createSlice({
     }
 })
 
-export const { toggleAddSourceNoteModal } = addSourceSlice.actions
+export const { toggleDiscoveryModal } = discoveryModalSlice.actions
 
 
-export default addSourceSlice.reducer
+export default discoveryModalSlice.reducer

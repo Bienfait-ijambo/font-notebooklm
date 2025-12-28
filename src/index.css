@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@tailwind utilities;
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -117,4 +118,16 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .bg1 { @apply bg-blue-50; }
+  .bg2 { @apply bg-indigo-50; }
+  .bg3 { @apply bg-orange-50; }
+  .bg4 { @apply bg-green-50; }
+  .bg5 { @apply bg-yellow-50; }
+  .bg6 { @apply bg-gray-50; }
+  .bg7 { @apply bg-purple-50; }
+  .bg8 { @apply bg-pink-50; }
+  .bg9 { @apply bg-teal-50; }
 }

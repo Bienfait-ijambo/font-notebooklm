@@ -28,7 +28,10 @@ const initialState: NotesState = {
 const notesSlice = createSlice({
   name: "note",
   initialState,
-  reducers: {},
+  reducers: {
+
+
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotes.pending, (state) => {

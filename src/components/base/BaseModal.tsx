@@ -15,8 +15,9 @@ interface BaseModalProps {
   description?: string
   children?: React.ReactNode
   footer?: React.ReactNode
-  width:number
-  height:number
+  width: number
+  height: number
+  background?:string
 }
 
 export function BaseModal({
@@ -27,21 +28,23 @@ export function BaseModal({
   children,
   footer,
   width,
-  height
+  height,
+  background
 }: BaseModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-      style={{
+      <DialogContent
+        style={{
 
-    width: "500vw",
-    maxWidth: width+"px",
-    height:height+"px"
-    
-  }}>
+          width: "500vw",
+          maxWidth: width + "px",
+          height: height + "px",
+          background:background
+
+        }}>
         {(title || description) && (
           <DialogHeader>
-            {title && <DialogTitle>{title}</DialogTitle>}
+            {title && <DialogTitle className="text-gray-500">{title}</DialogTitle>}
             {description && (
               <DialogDescription>{description}</DialogDescription>
             )}
