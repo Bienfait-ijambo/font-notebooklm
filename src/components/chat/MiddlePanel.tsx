@@ -40,7 +40,7 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
         setLoading(false)
         setTimeout(scrollToBottom, 100);
         dispatch(addMessageInChatHistory(data?.message))
-        setInputValue("");
+        
     }
 
     const sendMessage = async () => {
@@ -53,6 +53,7 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
         };
 
         await sendUserMessage({ newMessage })
+       
     };
 
 
@@ -78,7 +79,9 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
                 content: inputValue,
                 userId, noteId
             };
+            setInputValue("");
             await sendUserMessage({ newMessage })
+            
 
         }
     };
@@ -191,7 +194,7 @@ const MiddlePannel = ({ chatHistory, userId, note, aiResult }: { chatHistory: ch
                 </div>
 
             </div>
-            <SuggestedInput selectQuestion={selectQuestion} aiResult={aiResult} />
+            <SuggestedInput selectQuestion={selectQuestion} questions={aiResult?.aiResult?.questions} />
         </div>
     );
 
@@ -354,7 +357,7 @@ type Msg = { role: "ai" | "user"; content: string };
 
 const  ChatMessage=memo(({ msg }: { msg: Msg }) =>{
     return (
-        <div className={`flex ${msg.role === "ai" ? "justify-start" : "justify-end"}`}>
+        <div className={`flex ${msg?.role === "ai" ? "justify-start" : "justify-end"}`}>
             <div
                 className={`
           max-w-[90%] px-4 text-sm

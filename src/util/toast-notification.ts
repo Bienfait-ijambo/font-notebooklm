@@ -15,7 +15,7 @@ export const showSuccess = (message?: string) => {
 export const showError = (message: string) => {
   toast.error(message, {
     position: "bottom-right",
-    autoClose: 4000,
+    autoClose: 10000,
     theme: "colored",
   });
 };

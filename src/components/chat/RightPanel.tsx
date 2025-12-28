@@ -52,22 +52,34 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
     }
 
   }
-
+const [audioLoading, setAudioLoading] = useState(false);
+  const [mindMapLoading, setMindMapLoading] = useState(false);
 
   async function generateMindMap() {
 
-    if (docIds.length > 0) {
+   try {
+
+     if (docIds.length > 0) {
+      setMindMapLoading(true)
       await createMindMap(noteId, docIds)
       fetchSources()
     } else {
       showError("Please select a source");
     }
+    
+   } catch (error) {
+     showError("Failed to generate mind map");
+     setMindMapLoading(false)
+   }finally{
+     setMindMapLoading(false)
+   }
 
   }
 
 
 
-  const [audioLoading, setAudioLoading] = useState(false);
+  
+
 
   async function generateAudio() {
     if (docIds.length > 0) {
@@ -125,8 +137,8 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
 
         </div>
 
-        <PanelItem rightPanelOpen={rightPanelOpen} icon={<Video />} label="Video Overview" />
-        <PanelItem generateSource={generateMindMap} rightPanelOpen={rightPanelOpen} icon={<GitBranch />} label="Mind Map" />
+        <PanelItem rightPanelOpen={rightPanelOpen} generateSource={()=>showError('Look for video generation api, EVERY THING WORKS EXCEPT THE VIDEO GENERATION API')} icon={<Video />} label="Video Overview" />
+        <PanelItem generateSource={generateMindMap} loading={mindMapLoading} rightPanelOpen={rightPanelOpen} icon={<GitBranch />} label="Mind Map" />
 
         <ReportPanelItem rightPanelOpen={rightPanelOpen} fetchSources={fetchSources} noteId={noteId} docIds={docIds} />
       </div>
@@ -205,23 +217,46 @@ const RightPanel = ({ noteId }: { noteId?: string }) => {
   );
 };
 
-const PanelItem = ({ icon, label, rightPanelOpen, generateSource }: { icon: React.ReactNode; label: string; rightPanelOpen: boolean, generateSource: () => void }) => {
+
+
+const PanelItem = ({
+  icon,
+  label,
+  rightPanelOpen,
+  generateSource,
+  loading = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  rightPanelOpen: boolean;
+  generateSource: () => void;
+  loading?: boolean;
+}) => {
   return (
-
     <div
-      onClick={generateSource}
-      className={`flex items-center  justify-center  rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer transition ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"
-
-        }  ${label == 'Mind Map' ? 'bg-orange-50' : ''} ${label == 'Audio Overview' ? 'bg-green-50' : ''} `}
+      onClick={!loading ? generateSource : undefined}
+      className={`flex items-center justify-center rounded-md transition
+        ${rightPanelOpen ? "flex-col p-4 h-24" : "p-2 h-14"}
+        ${label === "Mind Map" ? "bg-orange-50" : "bg-gray-100"}
+        ${label === "Audio Overview" ? "bg-green-50" : ""}
+        ${loading ? "cursor-not-allowed opacity-60" : "hover:bg-gray-200 cursor-pointer"}
+      `}
     >
-      {icon}
-      {rightPanelOpen && <span className="mt-2 text-sm  text-gray-700">{label}</span>}
+      {loading ? (
+        <span className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+      ) : (
+        icon
+      )}
 
+      {rightPanelOpen && (
+        <span className="mt-2 text-sm text-gray-700">
+          {loading ? "Loading..." : label}
+        </span>
+      )}
     </div>
-
-
   );
 };
+
 
 
 
