@@ -1,8 +1,6 @@
-import { Search } from "lucide-react";
 import * as React from "react";
 import MindElixir from "mind-elixir";
 import "mind-elixir/style.css";
-import { Button } from "@/components/ui/button";
 import { BaseModal } from "@/components/base/BaseModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store";

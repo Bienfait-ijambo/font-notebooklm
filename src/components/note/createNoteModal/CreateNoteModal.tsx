@@ -126,10 +126,7 @@ const CreateNoteModal = ({ noteId }: { noteId?: string }) => {
 
                 <div className="flex justify-between mb-10 ">
                     <div className="text-xl font-semibold">Add Sources</div>
-                    <div>
-                        <button onClick={() => dispatch(toggleDiscoveryModal())} className="flex gap-2  bg-indigo-100 rounded-full p-2 px-3 font-semibold text-indigo-600 ">
-                            <Search className="mt-1" size={16}></Search> <span>Discover sources</span></button>
-                    </div>
+                  
                 </div>
                 <div>
 

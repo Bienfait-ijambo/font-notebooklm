@@ -63,11 +63,11 @@ export const SourceModal = () => {
             strong: ({ node, ...props }) => <strong className="font-bold text-gray-700" {...props} />,
           }}>
             {`
-# ${sourceModal?.title}
+                # ${sourceModal?.title}
 
 
-${sourceModal?.content}
-`}
+                  ${sourceModal?.content}
+            `}
           </ReactMarkdown>
 
         </div>

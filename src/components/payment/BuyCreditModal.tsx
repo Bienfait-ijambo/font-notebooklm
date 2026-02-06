@@ -1,11 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Star,Check } from "lucide-react";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Loader2, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BaseModal } from "../base/BaseModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +18,7 @@ export const BuyCreditModal = () => {
   const [loading, setLoading] = useState(false);
 
 
-  const onSubmit = async (amount:number) => {
+  const onSubmit = async (amount: number) => {
     try {
       const userData = getUserData();
       setLoading(true)
@@ -34,13 +29,13 @@ export const BuyCreditModal = () => {
       });
       showSuccess(res?.message);
       dispatch(togglePaymentModal());
-        dispatch(fetchUserCreditAndPayment(userData?._id))
-      
-      
+      dispatch(fetchUserCreditAndPayment(userData?._id))
+
+
       setLoading(false)
 
     } catch (err) {
-       setLoading(false)
+      setLoading(false)
       console.error(err);
       showError("❌ Failed to purchase credit.");
     }
@@ -53,18 +48,18 @@ export const BuyCreditModal = () => {
       title="Buy Credits"
       width={900}
       height={700}
-     
-      
+
+
     >
       <form
         id="buy-credit-form"
-   
+
         className="space-y-8 mt-4 p-4"
       >
-     
 
-<PricingPlan onSubmit={onSubmit} loading={loading} />
-      
+
+        <PricingPlan onSubmit={onSubmit} loading={loading} />
+
       </form>
     </BaseModal>
   );
@@ -94,7 +89,7 @@ const perks = {
   ],
 };
 
-const PricingPlan = ({onSubmit,loading}:{onSubmit:(amount:number)=>void,loading:boolean}) => {
+const PricingPlan = ({ onSubmit, loading }: { onSubmit: (amount: number) => void, loading: boolean }) => {
   return (
     <section className="w-full py-1">
       <div className="text-center mb-8">
@@ -153,7 +148,7 @@ const PricingPlan = ({onSubmit,loading}:{onSubmit:(amount:number)=>void,loading:
             ))}
           </ul>
 
-          <Button onClick={()=>onSubmit(5)} disabled={loading} variant="outline" className="mt-auto">
+          <Button onClick={() => onSubmit(5)} disabled={loading} variant="outline" className="mt-auto">
             Subscribe
           </Button>
         </div>
@@ -189,25 +184,25 @@ const PricingPlan = ({onSubmit,loading}:{onSubmit:(amount:number)=>void,loading:
             ))}
           </ul>
 
-          <Button disabled={loading} onClick={()=>onSubmit(20)} className="bg-indigo-600 hover:bg-indigo-700 text-white mt-auto">
+          <Button disabled={loading} onClick={() => onSubmit(20)} className="bg-indigo-600 hover:bg-indigo-700 text-white mt-auto">
             Subscribe
           </Button>
         </div>
       </div>
       <div align="center" className="mb-2 pt-2">
-            {loading ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Processing payment...
-                            </>
-                        ) : (
-                            ""
-                        )}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Processing payment...
+          </>
+        ) : (
+          ""
+        )}
       </div>
 
       {/* Credit Info */}
       <CreditInfoCard />
-      
+
     </section>
   );
 };
